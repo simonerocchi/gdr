@@ -1,0 +1,11 @@
+.player-video {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.my-video
+{
+    transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
+}

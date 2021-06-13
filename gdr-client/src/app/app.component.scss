@@ -1,0 +1,23 @@
+.main-container {
+  height: 100vh !important;
+}
+
+.mat-tab-header {
+  flex-basis: 0 !important;
+}
+
+::ng-deep .mat-tab-body-wrapper {
+  flex-grow: 1 !important;
+}
+
+#toggle-right-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#toggle-left-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

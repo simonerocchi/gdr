@@ -1,0 +1,42 @@
+.messagebox {
+  padding: 5px;
+}
+
+.statusmessage {
+  text-align: center;
+  font-size: small;
+}
+
+.username {
+  font-weight: bolder;
+}
+
+.chatmessage {
+  font-size: large;
+
+}
+
+.dice-container {
+  padding: 20px;
+}
+
+.diceroll {
+  padding: 2px 6px;
+  border: 1px solid white;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.diceroll.good {
+  border-color: green;
+  color: green;
+  border-width: 2px !important;
+  font-weight: bolder !important;
+}
+
+.diceroll.bad {
+  border-color: red;
+  color: red;
+  border-width: 2px !important;
+  font-weight: bolder !important;
+}

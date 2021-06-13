@@ -1,0 +1,17 @@
+<div *ngIf="messaggio.Tipo == 'CHAT'" class="chatmessage messagebox">
+  <span class="username">{{ messaggio.Utente?.Nome }}:</span>&nbsp;{{ testo }}
+  <div class='dice-container' fxLayout="row wrap" fxLayoutAlign="space-around center" *ngIf="hasDice">
+    <div
+      *ngFor="let d of dice"
+      class="diceroll"
+      [ngClass]="{ good: d > 4, bad: d == 1 }"
+    >
+      {{ d }}
+    </div>
+  </div>
+</div>
+<div class="statusmessage messagebox" *ngIf="messaggio.Tipo == 'STATO'">
+  <span class="username">{{ messaggio.Utente?.Nome }}</span
+  >&nbsp;{{ "è " + (online ? "online" : "offline") }}
+</div>
+<mat-divider></mat-divider>

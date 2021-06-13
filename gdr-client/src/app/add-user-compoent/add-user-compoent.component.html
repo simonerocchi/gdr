@@ -1,0 +1,15 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <div>
+    <mat-form-field appearance="legacy">
+      <mat-label>Email</mat-label>
+      <input matInput placeholder="Email" formControlName="Email" />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="legacy">
+      <mat-label>Nome</mat-label>
+      <input matInput placeholder="Nome" formControlName="Nome" />
+    </mat-form-field>
+  </div>
+  <button mat-button color="primary" type="submit">Salva</button>
+</form>
