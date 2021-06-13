@@ -32,10 +32,10 @@ jobs:
     - name: Run build
       run: earthly +all
     - name: Tag image server
-      run: docker tag gdr ghcr.io/simonerocchi/gdr:${GITHUB_REF##*/}
+      run: docker tag gdr ghcr.io/mind-informatica-srl/gdr:${GITHUB_REF##*/}
     - name: Push server
-      run: docker push ghcr.io/simonerocchi/gdr:${GITHUB_REF##*/}
+      run: docker push ghcr.io/mind-informatica-srl/gdr:${GITHUB_REF##*/}
     - name: Tag image bootstrap
-      run: docker tag gdr-bootstrap ghcr.io/simonerocchi/gdr-bootstrap:${GITHUB_REF##*/}
+      run: docker tag gdr-bootstrap ghcr.io/mind-informatica-srl/gdr-bootstrap:${GITHUB_REF##*/}
     - name: Push bootstrap
-      run: docker push ghcr.io/simonerocchi/gdr-bootstrap:${GITHUB_REF##*/}
+      run: docker push ghcr.io/mind-informatica-srl/gdr-bootstrap:${GITHUB_REF##*/}
