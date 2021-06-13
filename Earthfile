@@ -3,8 +3,7 @@ all:
     BUILD +buildClient
     # BUILD +lint
     BUILD +serverImage
-    BUILD +syncImage
-    BUILD +gooseImage
+    BUILD +bootstrapImage
 
 buildClientEnvironment:
     FROM node:14
@@ -71,4 +70,4 @@ serverImage:
 bootstrapImage:
     FROM +baseImage
     CMD ["/app/gdr", "bootstrap"]
-    SAVE IMAGE gdr-sync
+    SAVE IMAGE gdr-bootstrap
