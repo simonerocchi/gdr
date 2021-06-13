@@ -10,3 +10,9 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Node artifact files
+node_modules/
+dist/
+gdr-client/node_modules/.bin/acorn
+gdr-client/node_modules/.bin/acorn
