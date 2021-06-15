@@ -21,6 +21,7 @@ import { MessaggioComponentComponent } from './messaggio-component/messaggio-com
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { PlayerComponent } from './player/player.component';
+import { CharacterComponent } from './character/character.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { PlayerComponent } from './player/player.component';
     ChatComponentComponent,
     MessaggioComponentComponent,
     PlayerComponent,
+    CharacterComponent,
   ],
   imports: [
     BrowserModule,

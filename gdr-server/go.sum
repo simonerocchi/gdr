@@ -22,6 +22,8 @@ github.com/Mind-Informatica-srl/restapi v0.1.5 h1:7OSKcaDZjQPI3NoL5B1tVWgDLMQztV
 github.com/Mind-Informatica-srl/restapi v0.1.5/go.mod h1:lbduTQfjKYSPkFWyh9k0343aU13IIykdK2OeDbHjqgE=
 github.com/Mind-Informatica-srl/restapi v1.0.8 h1:Hztg2EuT6E7ZHZjy/WScUiArqB3GA92h7W0HJAfQMGk=
 github.com/Mind-Informatica-srl/restapi v1.0.8/go.mod h1:lbduTQfjKYSPkFWyh9k0343aU13IIykdK2OeDbHjqgE=
+github.com/Mind-Informatica-srl/restapi v1.0.9 h1:3PxF+7mEnZ/bOyizgkxjgpxdifvBm3UWVmJnKFb09Gw=
+github.com/Mind-Informatica-srl/restapi v1.0.9/go.mod h1:lbduTQfjKYSPkFWyh9k0343aU13IIykdK2OeDbHjqgE=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=

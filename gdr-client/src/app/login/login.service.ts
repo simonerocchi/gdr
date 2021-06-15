@@ -27,4 +27,8 @@ export class LoginService {
   authenticate(candidate: LoginCandidate): void {
     this.http.post<Utente>(environment.apiurl + '/login',candidate).subscribe(utente => this.userAccess.next(utente));
   }
+
+  updateUser(utente: Utente): void {
+    this.http.put<Utente>(environment.apiurl + '/utenti/' + utente.ID,utente).subscribe(utente => this.userAccess.next(utente));
+  }
 }

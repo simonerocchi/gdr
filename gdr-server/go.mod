@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	bitbucket.org/leonardoce/idcrypt v0.0.0-20200308153330-9dd41556822f
-	github.com/Mind-Informatica-srl/restapi v1.0.8
+	github.com/Mind-Informatica-srl/restapi v1.0.9
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/spf13/cobra v1.1.3

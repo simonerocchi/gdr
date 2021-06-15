@@ -32,5 +32,6 @@ func createServer() server.RestApiServer {
 	server.RegisterController(&utentiController)
 	server.RegisterController(&loginController)
 	server.RegisterController(&messaggiController)
+	server.RegisterController(&schedeController)
 	return server
 }

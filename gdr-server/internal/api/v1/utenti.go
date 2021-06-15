@@ -78,14 +78,17 @@ var utentiGetAllAction = actions.DBGetAllAction{
 
 var utentiGetOneAction = actions.DBGetOneAction{
 	Delegate: utentiDelegate,
+	Path:     "/{id}",
 }
 
 var utentiUpdateAction = actions.DBUpdateAction{
 	Delegate: utentiDelegate,
+	Path:     "/{id}",
 }
 
 var utentiDeleteAction = actions.DBDeleteAction{
 	Delegate: utentiDelegate,
+	Path:     "/{id}",
 }
 
 type passwordChage struct {

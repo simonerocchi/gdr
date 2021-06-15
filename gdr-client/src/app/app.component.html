@@ -1,13 +1,19 @@
 <ng-container>
   <app-login *ngIf="!logged"></app-login>
   <mat-sidenav-container class="main-container" *ngIf="logged">
-    <mat-sidenav #rightSidenav position="end" mode="side" style="max-width: 20%;">
+    <mat-sidenav #rightSidenav position="end" mode="side" style="max-width: 30%;">
       <mat-tab-group mat-align-tabs="center" style="height: 100%">
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon>chat</mat-icon>
           </ng-template>
           <app-chat></app-chat>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>person</mat-icon>
+          </ng-template>
+          <app-character style="padding: 5px;"></app-character>
         </mat-tab>
         <mat-tab>
           <ng-template mat-tab-label>

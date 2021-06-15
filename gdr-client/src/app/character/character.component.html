@@ -1,0 +1,142 @@
+<form
+  [formGroup]="characterForm"
+  fxLayout="column"
+  fxLayoytGap="5px"
+  fxLayoutAlign="space-around stretch"
+>
+  <mat-form-field appearance="legacy" fxFlex>
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Name" formControlName="Name" />
+  </mat-form-field>
+  <mat-form-field appearance="legacy" fxFlex>
+    <mat-label>Archetype</mat-label>
+    <input matInput placeholder="Archetype" formControlName="Archetype" />
+  </mat-form-field>
+  <mat-form-field appearance="legacy" fxFlex>
+    <mat-label>Drive</mat-label>
+    <input matInput placeholder="Drive" formControlName="Drive" />
+  </mat-form-field>
+  <mat-form-field appearance="legacy" fxFlex>
+    <mat-label>Level</mat-label>
+    <input matInput placeholder="Level" formControlName="Level" type="number" />
+  </mat-form-field>
+  <mat-form-field appearance="legacy" fxFlex>
+    <mat-label>XP</mat-label>
+    <input matInput placeholder="XP" formControlName="XP" type="number" />
+  </mat-form-field>
+  <div fxFlex>
+    <div fxLayout="row" fxLayoytGap="5px">
+      <mat-label fxFlex>Traits</mat-label>
+      <button
+        (click)="addTrait()"
+        fxFlex="nogrow"
+        mat-icon-button
+        aria-label="add trait"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <div
+      *ngFor="let t of traitsArray.controls; let i = index"
+      formArrayName="Traits"
+      fxLayout="row"
+      fxLayoytGap="5px"
+      fxLayoutAlign="space-around center"
+    >
+      <mat-form-field appearance="legacy" fxFlex>
+        <input matInput [formControlName]="i" type="string" />
+      </mat-form-field>
+      <button
+        (click)="removeTrait(i)"
+        fxFlex="nogrow"
+        mat-icon-button
+        aria-label="delete trait"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-label fxFlex>Grit</mat-label>
+  <div
+    fxFlex
+    fxLayout="row"
+    fxLayoytGap="5px"
+    fxLayoutAlign="space-around center"
+  >
+    <mat-form-field appearance="legacy" fxFlex>
+      <input matInput formControlName="Grit" type="number" />
+    </mat-form-field>
+    <div fxFlex>/</div>
+    <mat-form-field appearance="legacy" fxFlex>
+      <input matInput formControlName="MaxGrit" type="number" />
+    </mat-form-field>
+  </div>
+
+  <div fxFlex>
+    <div fxLayout="row" fxLayoytGap="5px">
+      <mat-label fxFlex>Conditions</mat-label>
+      <button
+        (click)="addCondition()"
+        fxFlex="nogrow"
+        mat-icon-button
+        aria-label="add condition"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <div
+      *ngFor="let t of conditionsArray.controls; let i = index"
+      formArrayName="Conditions"
+      fxLayout="row"
+      fxLayoytGap="5px"
+      fxLayoutAlign="space-around center"
+    >
+      <mat-form-field appearance="legacy" fxFlex>
+        <input matInput [formControlName]="i" type="string" />
+      </mat-form-field>
+      <button
+        (click)="removeCondition(i)"
+        fxFlex="nogrow"
+        mat-icon-button
+        aria-label="delete condition"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div fxFlex>
+    <div fxLayout="row" fxLayoytGap="5px">
+      <mat-label fxFlex>Equipment</mat-label>
+      <button
+        (click)="addEquipment()"
+        fxFlex="nogrow"
+        mat-icon-button
+        aria-label="add condition"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <div
+      *ngFor="let t of equipmentArray.controls; let i = index"
+      formArrayName="Equipment"
+      fxLayout="row"
+      fxLayoytGap="5px"
+      fxLayoutAlign="space-around center"
+    >
+      <mat-form-field appearance="legacy" fxFlex>
+        <input matInput [formControlName]="i" type="string" />
+      </mat-form-field>
+      <button
+        (click)="removeEquipment(i)"
+        fxFlex="nogrow"
+        mat-icon-button
+        aria-label="delete equipment"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <button (click)="onSubmit()" fxFlex="nogrow">Save</button>
+</form>

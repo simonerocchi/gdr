@@ -2,7 +2,6 @@ package model
 
 import (
 	"bitbucket.org/leonardoce/idcrypt/pkg/idcrypt"
-	"github.com/Mind-Informatica-srl/restapi/pkg/models"
 )
 
 // Utente is the model for the user
@@ -10,7 +9,6 @@ type Utente struct {
 	ID                        int
 	Nome                      string
 	Email                     string
-	Scheda                    *models.JSONB
 	*idcrypt.CredentialRecord `json:"-"`
 	MasterKey                 []byte  `gorm:"-" json:"-"`
 	JwtToken                  *string `gorm:"-"`
