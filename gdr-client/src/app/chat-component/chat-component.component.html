@@ -1,8 +1,18 @@
-<div fxLayout="column" fxLayoutAlign="none stretch" style="height: 100%;">
+<div fxLayout="column" fxLayoutAlign="none stretch" style="height: 100%">
   <div fxFlex="90%" style="overflow: scroll" id="chatscrollarea">
     <div style="width: 100%">
       <app-messaggio *ngFor="let m of messages" [messaggio]="m">
       </app-messaggio>
+    </div>
+  </div>
+  <div fxFlex="5%" fxLayout="row" fxLayoutAlign="space-around center">
+    <div
+      fxFlex="nogrow"
+      *ngFor="let n of [1, 2, 3, 4, 5, 6]"
+      (click)="roll(n)"
+      class="roll-btn"
+    >
+      {{ n }}d6
     </div>
   </div>
   <form

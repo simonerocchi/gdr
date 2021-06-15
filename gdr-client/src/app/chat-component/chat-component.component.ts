@@ -53,4 +53,9 @@ export class ChatComponentComponent implements OnInit {
   ngAfterViewChecked(): void {
     this.scrollToBottom();
   }
+
+  roll(n: number): void {
+    this.chatForm.setValue({'text': '/roll ' + n});
+    this.onSubmit();
+  }
 }

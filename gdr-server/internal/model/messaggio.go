@@ -1,12 +1,11 @@
 package model
 
 import (
-	"math/rand"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/Mind-Informatica-srl/restapi/pkg/models"
+	"github.com/simoneroc/gdr/internal/roll"
 )
 
 type Messaggio struct {
@@ -37,32 +36,22 @@ func (m *Messaggio) VerifyPK(pk interface{}) (bool, error) {
 }
 
 // Process elaborate the messagge before sending
-func (m Messaggio) Process() (Messaggio, error) {
+func (m *Messaggio) Process() error {
 	if m.Tipo == "CHAT" {
 		t := m.Content["Testo"]
 		if t == nil {
-			return m, nil
+			return nil
 		}
 		text := t.(string)
 		if strings.HasPrefix(text, "/roll ") {
-			dice := strings.Split(text, "/roll ")[1]
-			var nd int
-			var err error
-			if nd, err = strconv.Atoi(dice); err != nil {
-				m.Content["Testo"] = text + " non è un tiro valido"
-				return m, err
-			}
 			res := []int{}
-			for i := 0; i < nd; i += 1 {
-				r := rand.Intn(6) + 1
-				res = append(res, r)
-				if r == 6 {
-					r = rand.Intn(6) + 1
-					res = append(res, r)
-				}
+			var err error
+			if res, err = roll.Roll(text); err != nil {
+				m.Content["Testo"] = text + " non è un tiro valido"
+				return err
 			}
 			m.Content["Dice"] = res
 		}
 	}
-	return m, nil
+	return nil
 }

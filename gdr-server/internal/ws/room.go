@@ -162,8 +162,7 @@ func (r *Room) sendMessage(messaggio model.Messaggio) error {
 			}
 		}
 	} else {
-		var err error
-		if messaggio, err = messaggio.Process(); err != nil {
+		if err := messaggio.Process(); err != nil {
 			messaggio.Dest = messaggio.UtenteID
 			r.sendMessage(messaggio)
 			return nil

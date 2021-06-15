@@ -16,3 +16,4 @@ node_modules/
 dist/
 gdr-client/node_modules/.bin/acorn
 gdr-client/node_modules/.bin/acorn
+gdr-server/cmd/__debug_bin
