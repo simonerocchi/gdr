@@ -1,7 +1,7 @@
 <ng-container>
   <app-login *ngIf="!logged"></app-login>
   <mat-sidenav-container class="main-container" *ngIf="logged">
-    <mat-sidenav #rightSidenav position="end" mode="side">
+    <mat-sidenav #rightSidenav position="end" mode="side" style="max-width: 20%;">
       <mat-tab-group mat-align-tabs="center" style="height: 100%">
         <mat-tab>
           <ng-template mat-tab-label>
