@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
@@ -22,6 +23,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { PlayerComponent } from './player/player.component';
 import { CharacterComponent } from './character/character.component';
+import { PlayersComponent } from './players/players.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { CharacterComponent } from './character/character.component';
     MessaggioComponentComponent,
     PlayerComponent,
     CharacterComponent,
+    PlayersComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,8 @@ import { CharacterComponent } from './character/character.component';
     MatCardModule,
     MatDividerModule,
     FlexLayoutModule,
-    CommonModule
+    CommonModule,
+    MatButtonModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtAuthInterceptor, multi: true }

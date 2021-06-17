@@ -32,6 +32,7 @@
         fxFlex="nogrow"
         mat-icon-button
         aria-label="add trait"
+        color="primary"
       >
         <mat-icon>add</mat-icon>
       </button>
@@ -51,6 +52,7 @@
         fxFlex="nogrow"
         mat-icon-button
         aria-label="delete trait"
+        color="warning"
       >
         <mat-icon>delete</mat-icon>
       </button>
@@ -80,6 +82,7 @@
         fxFlex="nogrow"
         mat-icon-button
         aria-label="add condition"
+        color="primary"
       >
         <mat-icon>add</mat-icon>
       </button>
@@ -99,6 +102,7 @@
         fxFlex="nogrow"
         mat-icon-button
         aria-label="delete condition"
+        color="warning"
       >
         <mat-icon>delete</mat-icon>
       </button>
@@ -113,6 +117,7 @@
         fxFlex="nogrow"
         mat-icon-button
         aria-label="add condition"
+        color="primary"
       >
         <mat-icon>add</mat-icon>
       </button>
@@ -127,16 +132,25 @@
       <mat-form-field appearance="legacy" fxFlex>
         <input matInput [formControlName]="i" type="string" />
       </mat-form-field>
-      <button
-        (click)="removeEquipment(i)"
-        fxFlex="nogrow"
-        mat-icon-button
-        aria-label="delete equipment"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
+      <div fxFlex="nogrow">
+        <button
+          (click)="removeEquipment(i)"
+          mat-icon-button
+          aria-label="delete equipment"
+          color="warning"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 
-  <button (click)="onSubmit()" fxFlex="nogrow">Save</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+    fxFlex="nogrow"
+  >
+    Save
+  </button>
 </form>
