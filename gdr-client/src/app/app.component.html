@@ -1,7 +1,12 @@
 <ng-container>
   <app-login *ngIf="!logged"></app-login>
   <mat-sidenav-container class="main-container" *ngIf="logged">
-    <mat-sidenav #rightSidenav position="end" mode="side" style="max-width: 30%;">
+    <mat-sidenav
+      #rightSidenav
+      position="end"
+      mode="side"
+      style="max-width: 30%"
+    >
       <mat-tab-group mat-align-tabs="center" style="height: 100%">
         <mat-tab>
           <ng-template mat-tab-label>
@@ -13,7 +18,7 @@
           <ng-template mat-tab-label>
             <mat-icon>person</mat-icon>
           </ng-template>
-          <app-character style="padding: 5px;"></app-character>
+          <app-character style="padding: 5px"></app-character>
         </mat-tab>
         <mat-tab>
           <ng-template mat-tab-label>
@@ -22,23 +27,6 @@
           <app-add-user></app-add-user>
         </mat-tab>
       </mat-tab-group>
-    </mat-sidenav>
-    <mat-sidenav #leftSidenav position="start" mode="side" style="max-width: 20%;">
-      <div fxLayout="column" style="height: 100%">
-        <button
-          fxFlex="nogrow"
-          mat-icon-button
-          aria-label="toggle sidevan"
-          (click)="toggleStreaming()"
-        >
-          <mat-icon>camera</mat-icon>
-        </button>
-        <app-player
-          *ngFor="let player of players"
-          fxFlex
-          [player]="player"
-        ></app-player>
-      </div>
     </mat-sidenav>
     <mat-sidenav-content>
       <button
@@ -49,15 +37,8 @@
       >
         <mat-icon>menu</mat-icon>
       </button>
-      <button
-        id="toggle-left-btn"
-        mat-icon-button
-        aria-label="toggle sidevan"
-        (click)="leftSidenav.toggle()"
-      >
-        <mat-icon>menu</mat-icon>
-      </button>
       <router-outlet></router-outlet>
+      <app-players style="width: 100%; position: absolute; left: 0; bottom: 0;"></app-players>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </ng-container>

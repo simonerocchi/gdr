@@ -46,7 +46,11 @@ export class PlayersComponent implements OnInit {
   add(player: Player) {
     let p = this.players.find(pl => pl.Utente.ID == player.Utente.ID);
     if(!p) {
-      this.players.push(player);
+      if(player.Utente.ID == this.login.currentUser?.ID) {
+        this.players.unshift(player);
+      } else {
+        this.players.push(player);
+      }
     } else {
       p.Stato = player.Stato;
     }

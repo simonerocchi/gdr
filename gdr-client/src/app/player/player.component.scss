@@ -1,6 +1,22 @@
+.mat-card {
+  padding: 0;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.mat-card-title {
+  margin: 0;
+}
+
+.mat-card-content {
+  text-align: center;
+}
+
 .player-video {
-  width: 100% !important;
-  height: 100% !important;
+  width: 200px !important;
+  height: 150px !important;
+  object-fit: fill;
+  margin: 5px;
 }
 
 .my-video

@@ -1,4 +1,19 @@
-<div>
-  {{ player!.Nome }}
-</div>
-<video #videoElement autoplay playsinline class="player-video" [ngClass]="{'my-video':itsMe}"></video>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <span>{{ utente!.Nome }}</span>
+      <button [disabled]="!itsMe" mat-icon-button color="primary" (click)="toggleStreaming()">
+        <mat-icon>videocam</mat-icon>
+      </button>
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <video
+      #videoElement
+      autoplay
+      playsinline
+      class="player-video"
+      [ngClass]="{ 'my-video': itsMe }"
+    ></video>
+  </mat-card-content>
+</mat-card>
