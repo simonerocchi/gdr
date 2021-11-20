@@ -1,4 +1,4 @@
-import { ChatContent, Messaggio } from './../model/messaggio.model';
+import { ChatContent, Messaggio, TipoMessaggio } from './../model/messaggio.model';
 import { environment } from 'src/environments/environment';
 import { SignalingService } from './../signaling/signaling.service';
 import { Component, OnInit } from '@angular/core';
@@ -35,7 +35,7 @@ export class ChatComponentComponent implements OnInit {
     };
     let messaggio = <Messaggio>{
       Content: content,
-      Tipo: 'CHAT'
+      Tipo: TipoMessaggio.Chat
     };
     this.signalingService.send(messaggio);
     this.chatForm.setValue({'text':''});

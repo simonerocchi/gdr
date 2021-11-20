@@ -1,4 +1,4 @@
-<div *ngIf="messaggio.Tipo == 'CHAT'" class="chatmessage messagebox">
+<div *ngIf="messaggio.Tipo == tipiMessaggio.Chat" class="chatmessage messagebox">
   <span class="username">{{ messaggio.Utente?.Nome }}:</span>&nbsp;{{ testo }}
   <div class='dice-container' fxLayout="row wrap" fxLayoutAlign="space-around center" *ngIf="hasDice">
     <div
@@ -10,7 +10,7 @@
     </div>
   </div>
 </div>
-<div class="statusmessage messagebox" *ngIf="messaggio.Tipo == 'STATO'">
+<div class="statusmessage messagebox" *ngIf="messaggio.Tipo == tipiMessaggio.Stato">
   <span class="username">{{ messaggio.Utente?.Nome }}</span
   >&nbsp;{{ "è " + (online ? "online" : "offline") }}
 </div>

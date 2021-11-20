@@ -1,4 +1,4 @@
-import { Messaggio } from './../model/messaggio.model';
+import { Messaggio, TipoMessaggio } from './../model/messaggio.model';
 import { BehaviorSubject } from 'rxjs';
 import { LoginService } from './../login/login.service';
 import { Injectable } from '@angular/core';
@@ -27,10 +27,10 @@ export class SignalingService {
     this.signalingSocket.onmessage = (message) => {
       let m = <Messaggio>JSON.parse(message.data);
       switch (m.Tipo) {
-        case 'CHAT':
+        case TipoMessaggio.Chat:
           this.chat.next(m);
           break;
-        case 'STATO':
+        case TipoMessaggio.Stato:
           this.access.next(m);
           break;
         default:
@@ -41,7 +41,7 @@ export class SignalingService {
   }
   send(messaggio: Messaggio): void {
     if (this.signalingSocket?.readyState == WebSocket.CLOSED) {
-      let s = this.open.subscribe(() => {
+      let s = this.open.asObservable().subscribe(() => {
         this.send(messaggio);
         s.unsubscribe();
       });
@@ -49,5 +49,8 @@ export class SignalingService {
     } else {
       this.signalingSocket?.send(JSON.stringify(messaggio));
     }
+  }
+  stopSignaling() {
+    this.signalingSocket?.close();
   }
 }

@@ -1,4 +1,4 @@
-import { Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { LoginService } from './../login/login.service';
 import { SignalingService } from './../signaling/signaling.service';
 import { Injectable } from '@angular/core';
@@ -7,8 +7,9 @@ import {
   Messaggio,
   RTCDescrInitContent,
   StatoContent,
+  TipoMessaggio,
 } from '../model/messaggio.model';
-import { ValueProvider } from '@angular/core';
+import { Player } from '../model/player.model';
 
 enum cameraMode {
   user = 'user',
@@ -30,8 +31,13 @@ export class RTCService {
     RTCPeerConnection
   >();
   private streamingSubscription: Subscription | undefined;
-  streamAvailable = new Subject<{ ID: number; stream: MediaStream }>();
-  streamUnavailable = new Subject<number>();
+  private _streamAvailable = new Subject<Player>();
+  streamAvailable = (() => this._streamAvailable.asObservable())();
+  private _streamUnavailable = new Subject<Player>();
+  streamUnavailable = (() => this._streamUnavailable.asObservable())();
+  private _streaming = new BehaviorSubject<boolean>(false);
+  streaming = (() => this._streaming.asObservable())();
+  myStream?: Player;
   get mediaConstraint(): any {
     return {
       video: {
@@ -51,85 +57,88 @@ export class RTCService {
     this.switchCameras(val ? cameraMode.user : cameraMode.environment);
   }
 
-  private localStream: MediaStream | undefined;
-
   constructor(
     private signaling: SignalingService,
     private login: LoginService
   ) {
+    this.signaling.close.subscribe(() => this.stopStreaming());
   }
-  async startStreaming(): Promise<void> {
+  startStreaming() {
     let id = this.login.currentUser!.ID;
-    const stream = await navigator.mediaDevices.getUserMedia(
-      this.mediaConstraint
-    );
-    this.localStream = stream;
-    this.streamAvailable.next({ ID: id, stream: stream });
-    let sub = new Subscription()
-    sub.add(this.signaling.access.subscribe((messaggio) => {
-      if(messaggio.UtenteID == this.login.currentUser?.ID) {
-        return;
-      }
-      let c = messaggio.Content as StatoContent;
-      if (c.Online && c.Streaming) {
-        this.call(messaggio.UtenteID!);
-      } else {
-        this.streamingStopped(messaggio.UtenteID!);
-      }
-    }));
-    sub.add(this.signaling.message.subscribe((messaggio) => {
-      let id = messaggio.UtenteID!;
-      if(id == this.login.currentUser?.ID) {
-        return;
-      }
-      switch (messaggio.Tipo) {
-        case 'OFFER':
-          this.arriveOffer(id, messaggio);
-          break;
-        case 'ICE_CANDIDATE':
-          this.arriveCandidate(id, messaggio);
-          break;
-        case 'ANSWER':
-          this.arriveAnswer(id, messaggio);
-          break;
-        default:
-          break;
-      }
-    }));
-    this.streamingSubscription = sub;
-    this.signaling.send(<Messaggio>{
-      UtenteID: id,
-      Tipo: 'STATO',
-      Content: <StatoContent>{
-        Online: true,
-        Streaming: true,
-      },
+    navigator.mediaDevices.getUserMedia(this.mediaConstraint).then((stream) => {
+      this.myStream = { ID: id, MediaStream: stream };
+      let sub = new Subscription();
+      sub.add(
+        this.signaling.access.subscribe((messaggio) => {
+          if (messaggio.UtenteID == this.login.currentUser?.ID) {
+            return;
+          }
+          let c = messaggio.Content as StatoContent;
+          if (c.Online && c.Streaming) {
+            this.call(messaggio.UtenteID!);
+          } else {
+            this.streamingStopped(messaggio.UtenteID!);
+          }
+        })
+      );
+      sub.add(
+        this.signaling.message.subscribe((messaggio) => {
+          let id = messaggio.UtenteID!;
+          if (id == this.login.currentUser?.ID) {
+            return;
+          }
+          switch (messaggio.Tipo) {
+            case TipoMessaggio.Offer:
+              this.arriveOffer(id, messaggio);
+              break;
+            case TipoMessaggio.IceCandidate:
+              this.arriveCandidate(id, messaggio);
+              break;
+            case TipoMessaggio.Answer:
+              this.arriveAnswer(id, messaggio);
+              break;
+            default:
+              break;
+          }
+        })
+      );
+      this.streamingSubscription = sub;
+      this.signaling.send(<Messaggio>{
+        UtenteID: id,
+        Tipo: TipoMessaggio.Stato,
+        Content: <StatoContent>{
+          Online: true,
+          Streaming: true,
+        },
+      });
+      this._streaming.next(true);
     });
   }
 
   stopStreaming(): void {
     let id = this.login.currentUser!.ID;
-    delete this.localStream;
-    this.streamUnavailable.next(this.login.currentUser!.ID);
-    this.signaling.send(<Messaggio> {
+    this.myStream?.MediaStream?.getTracks().forEach(t => t.stop());
+    this.myStream = undefined;
+    this.signaling.send(<Messaggio>{
       UtenteID: id,
-      Tipo: 'STATO',
-      Content: <StatoContent> {
+      Tipo: TipoMessaggio.Stato,
+      Content: <StatoContent>{
         Online: true,
-        Streaming: false
-      }
+        Streaming: false,
+      },
     });
     this.peerConnections.forEach((pc, id) => this.streamingStopped(id));
     this.streamingSubscription?.unsubscribe();
+    this._streaming.next(false);
   }
 
   streamingStopped(id: number): void {
     let pc = this.peerConnection(id);
-    if(pc) {
+    if (pc) {
       pc.close();
       this.peerConnections.delete(id);
       this.streams.delete(id);
-      this.streamUnavailable.next(id);
+      this._streamUnavailable.next({ ID: id });
     }
   }
 
@@ -138,7 +147,7 @@ export class RTCService {
    * @param camera stringa definita in cameraMode
    */
   private switchCameras(camera: cameraMode) {
-    let traks = this.localStream!.getTracks();
+    let traks = this.myStream!.MediaStream!.getTracks();
     for (var i = 0; i < traks.length; i++) {
       let track = traks[i];
       let constraints = track.getConstraints();
@@ -154,26 +163,16 @@ export class RTCService {
     this.peerConnections.set(id, pc);
     let stream = new MediaStream();
     this.streams.set(id, stream);
-    this.streamAvailable.next({ ID: id, stream: stream });
+    this._streamAvailable.next({ ID: id, MediaStream: stream });
     pc.ontrack = (event) => this.connectionDidTrackEvent(id, event.track);
     pc.onicecandidate = (event) => this.didDiscoverIceCandidate(event, id);
     pc.onconnectionstatechange = () => this.connectionStateDidChange(id);
     pc.oniceconnectionstatechange = () => this.iceConnectionStateDidChange(id);
-    if (this.localStream != null) {
-      this.localStream.getTracks().forEach((track: MediaStreamTrack) => {
-        pc.addTrack(track);
-      });
-    }
+    this.myStream?.MediaStream?.getTracks().forEach((track: MediaStreamTrack) => {
+      pc.addTrack(track);
+    });
     pc.onicecandidateerror = (ev) =>
-      console.log(
-        'onicecandidateerror',
-        'error type: ' +
-          ev.type +
-          ' - errorcode: ' +
-          ev.errorCode +
-          ' - errortext: ' +
-          ev.errorText
-      );
+      console.log('onicecandidateerror', 'error type: ' + ev.type);
     return pc;
   }
 
@@ -184,7 +183,7 @@ export class RTCService {
       this.signaling.send(<Messaggio>{
         UtenteID: this.login.currentUser!.ID,
         Dest: id,
-        Tipo: 'OFFER',
+        Tipo: TipoMessaggio.Offer,
         Content: <RTCDescrInitContent>{
           DescriInit: offer,
         },
@@ -221,7 +220,7 @@ export class RTCService {
       this.signaling.send(<Messaggio>{
         UtenteID: this.login.currentUser?.ID,
         Dest: id,
-        Tipo: 'ICE_CANDIDATE',
+        Tipo: TipoMessaggio.IceCandidate,
         Content: <IceCandidateContent>{
           IceCandidate: event.candidate,
         },
@@ -248,7 +247,7 @@ export class RTCService {
       this.signaling.send(<Messaggio>{
         UtenteID: this.login.currentUser!.ID,
         Dest: id,
-        Tipo: 'ANSWER',
+        Tipo: TipoMessaggio.Answer,
         Content: <RTCDescrInitContent>{
           DescriInit: answer,
         },

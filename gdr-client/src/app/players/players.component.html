@@ -1,3 +1,22 @@
-<div fxLayout="row">
-  <app-player *ngFor="let player of players" [player]="player"></app-player>
+<div
+  fxFill
+  class="players"
+  fxLayoutAlign="space-around stretch"
+  fxLayout="column"
+  fxLayout.xs="row"
+>
+  <ng-container *ngIf="others.length > 0">
+    <div
+      class="players-row"
+      fxFlex
+      fxLayout="row"
+      fxLayout.xs="column"
+      fxLayoutAlign="space-around stretch"
+      *ngFor="let c of others"
+    >
+      <app-player [player]="p" fxFlex *ngFor="let p of c"></app-player>
+    </div>
+  </ng-container>
+  <div *ngIf="others.length == 0" fxFill>Non c'è nessuno</div>
+  <app-player [player]="me" class="me"></app-player>
 </div>

@@ -7,12 +7,13 @@ export interface Messaggio {
   UtenteID?: number,
   Utente?: Utente,
   Dest?: number,
-  Tipo?: string
+  Tipo?: TipoMessaggio
 }
 
 export interface StatoContent {
   Online: boolean,
-  Streaming: boolean
+  Streaming: boolean,
+  Fake: boolean
 }
 
 export interface ChatContent {
@@ -26,4 +27,13 @@ export interface IceCandidateContent {
 
 export interface RTCDescrInitContent {
   DescriInit: RTCSessionDescriptionInit
+}
+
+export enum TipoMessaggio {
+  Stato = "STATO",
+  Chat = "CHAT",
+  Offer = "OFFER",
+  IceCandidate = "ICE_CANDIDATE",
+  Answer = "ANSWER",
+  Other = ""
 }

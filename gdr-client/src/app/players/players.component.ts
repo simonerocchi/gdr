@@ -1,64 +1,62 @@
 import { SignalingService } from './../signaling/signaling.service';
-import { Utente } from './../model/utente.model';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../login/login.service';
-import { RTCService } from '../rtc/rtc.service';
-import { StatoContent } from '../model/messaggio.model';
 import { Player } from '../model/player.model';
+import { RTCService } from '../rtc/rtc.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-players',
   templateUrl: './players.component.html',
-  styleUrls: ['./players.component.scss']
+  styleUrls: ['./players.component.scss'],
 })
 export class PlayersComponent implements OnInit {
-  players: Player[] = [];
-  private streaming: boolean = false;
+  streamers: Player[] = [];
   private _logged: boolean = false;
   set logged(value: boolean) {
     this._logged = value;
-    if(value) {
-      this.signaling.access.subscribe(m => {
-        let status = m.Content as StatoContent;
-        if(status.Online) {
-          this.add(<Player> {
-            Utente: m.Utente,
-            Stato: status
-          });
-        } else {
-          this.remove(m.Utente!.ID);
-        }
-      });
-      this.signaling.initSignaling();
+    if (value) {
+      this.rtc.streamAvailable.subscribe((p) => this.streamers.push(p));
+      this.rtc.streamUnavailable.subscribe((p) =>
+        this.streamers.splice(
+          this.streamers.findIndex((pl) => pl.ID == p.ID),
+          1
+        )
+      );
     }
   }
   get logged(): boolean {
     return this._logged;
   }
 
-  constructor(private login: LoginService, private signaling: SignalingService) {
+  get others(): Player[][] {
+    const colLength: number = 2;
+    const rowLength =
+      (this.streamers.length - (this.streamers.length % colLength)) / colLength +
+      (this.streamers.length % colLength);
+    let rows: Player[][] = [];
+    for (let r = 0; r < Math.min(colLength, this.streamers.length); r++) {
+      let row: Player[] = this.streamers.slice(
+        r * rowLength,
+        r * rowLength + rowLength
+      );
+      rows.push(row);
+    }
+    return rows;
   }
+
+  get me(): Player | undefined {
+    return this.rtc.myStream;
+  }
+
+  constructor(
+    private login: LoginService,
+    private rtc: RTCService
+  ) {}
 
   ngOnInit(): void {
-    this.login.userAccess.asObservable().subscribe(utente => this.logged = utente != null);
-  }
-
-  add(player: Player) {
-    let p = this.players.find(pl => pl.Utente.ID == player.Utente.ID);
-    if(!p) {
-      if(player.Utente.ID == this.login.currentUser?.ID) {
-        this.players.unshift(player);
-      } else {
-        this.players.push(player);
-      }
-    } else {
-      p.Stato = player.Stato;
-    }
-  }
-  remove(id: number) {
-    let ind = this.players.findIndex(player => player.Utente.ID == id);
-    if(ind >= 0) {
-      this.players.splice(ind,1);
-    }
+    this.login.userAccess
+      .asObservable()
+      .subscribe((utente) => (this.logged = utente != null));
   }
 }

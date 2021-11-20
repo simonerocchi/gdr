@@ -1,6 +1,6 @@
 <ng-container>
-  <app-login *ngIf="!logged"></app-login>
-  <mat-sidenav-container class="main-container" *ngIf="logged">
+  <app-login *ngIf="!logged" fxFill></app-login>
+  <mat-sidenav-container class="main-container" *ngIf="logged" fxFill>
     <mat-sidenav
       #rightSidenav
       position="end"
@@ -37,8 +37,15 @@
       >
         <mat-icon>menu</mat-icon>
       </button>
-      <router-outlet></router-outlet>
-      <app-players style="width: 100%; position: absolute; left: 0; bottom: 0;"></app-players>
+      <button
+        id="stream-btn"
+        mat-fab
+        aria-label="start/stop streaming"
+        (click)="toggleStreaming()"
+      >
+        <mat-icon>videocam</mat-icon>
+      </button>
+      <app-players *ngIf="streaming" fxFill></app-players>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </ng-container>

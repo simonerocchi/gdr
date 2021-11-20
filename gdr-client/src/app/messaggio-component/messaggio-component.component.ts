@@ -1,4 +1,4 @@
-import { Messaggio, StatoContent, ChatContent } from './../model/messaggio.model';
+import { Messaggio, StatoContent, ChatContent, TipoMessaggio } from './../model/messaggio.model';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
@@ -9,6 +9,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class MessaggioComponentComponent implements OnInit {
   @Input()
   messaggio!: Messaggio;
+  tipiMessaggio = TipoMessaggio;
   constructor() { }
 
   ngOnInit(): void {
