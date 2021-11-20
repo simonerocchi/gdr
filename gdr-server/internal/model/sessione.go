@@ -1,6 +1,6 @@
 package model
 
-import "bitbucket.org/leonardoce/idcrypt/pkg/idcrypt"
+import "github.com/Mind-Informatica-srl/idcrypt/pkg/idcrypt"
 
 type Sessione struct {
 	ID                        string

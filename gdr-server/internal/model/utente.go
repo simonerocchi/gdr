@@ -1,7 +1,7 @@
 package model
 
 import (
-	"bitbucket.org/leonardoce/idcrypt/pkg/idcrypt"
+	"github.com/Mind-Informatica-srl/idcrypt/pkg/idcrypt"
 )
 
 // Utente is the model for the user

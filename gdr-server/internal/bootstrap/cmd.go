@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"bitbucket.org/leonardoce/idcrypt/pkg/idcrypt"
+	"github.com/Mind-Informatica-srl/idcrypt/pkg/idcrypt"
 	"github.com/Mind-Informatica-srl/restapi/pkg/logger"
 	"github.com/simoneroc/gdr/internal/configuration"
 	"github.com/simoneroc/gdr/internal/model"

@@ -12,8 +12,8 @@ import (
 	"github.com/simoneroc/gdr/internal/model"
 	"gorm.io/gorm"
 
-	"bitbucket.org/leonardoce/idcrypt/pkg/idcrypt"
-	"bitbucket.org/leonardoce/idcrypt/pkg/otp"
+	"github.com/Mind-Informatica-srl/idcrypt/pkg/idcrypt"
+	"github.com/Mind-Informatica-srl/idcrypt/pkg/otp"
 )
 
 // AuthenticationError is raised when the authentication procedure

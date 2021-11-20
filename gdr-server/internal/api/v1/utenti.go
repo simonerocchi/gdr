@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"bitbucket.org/leonardoce/idcrypt/pkg/idcrypt"
+	"github.com/Mind-Informatica-srl/idcrypt/pkg/idcrypt"
 	"github.com/gorilla/mux"
 	"github.com/simoneroc/gdr/internal/model"
 

@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"bitbucket.org/leonardoce/idcrypt/pkg/jwt"
+	"github.com/Mind-Informatica-srl/idcrypt/pkg/jwt"
 	mindlogger "github.com/Mind-Informatica-srl/restapi/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
