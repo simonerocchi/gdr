@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators, FormArray, AbstractControl } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { LoginService } from '../login/login.service';
 import { Scheda } from '../model/scheda.model';
 import { environment } from 'src/environments/environment';
@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./character.component.scss']
 })
 export class CharacterComponent implements OnInit {
+  @Input() characterID?: number
   characterForm: FormGroup;
   get traitsArray(): FormArray {
     return this.characterForm.get('Traits') as FormArray;
@@ -21,7 +22,7 @@ export class CharacterComponent implements OnInit {
   get equipmentArray(): FormArray {
     return this.characterForm.get('Equipment') as FormArray;
   }
-  constructor(private fb: FormBuilder, private http: HttpClient, private login: LoginService) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     this.characterForm = fb.group({
       Name: ['',Validators.required],
       Archetype: ['',Validators.required],
@@ -37,11 +38,10 @@ export class CharacterComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    let utente = this.login.currentUser;
-    this.http.get<Scheda | null>(environment.apiurl + '/schede/' + utente!.ID).subscribe(scheda => {
+    this.http.get<Scheda | null>(environment.apiurl + '/schede/' + this.characterID).subscribe(scheda => {
       if(scheda == null) {
         this.http.post(environment.apiurl + '/schede',<Scheda> {
-          UtenteID: utente!.ID,
+          UtenteID: this.characterID,
           Scheda: this.characterForm.value
         }).subscribe();
       } else {
@@ -55,9 +55,8 @@ export class CharacterComponent implements OnInit {
 
   onSubmit(): void {
     let scheda = this.characterForm.value;
-    let utente = this.login.currentUser;
-    this.http.put(environment.apiurl + '/schede/' + utente!.ID,<Scheda> {
-      UtenteID: utente!.ID,
+    this.http.put(environment.apiurl + '/schede/' + this.characterID,<Scheda> {
+      UtenteID: this.characterID,
       Scheda: scheda
     }).subscribe();
   }
