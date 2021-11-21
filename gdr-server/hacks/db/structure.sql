@@ -10,7 +10,7 @@ create table utenti (
 );
 
 create table sessioni (
-    id serial,
+    id text,
     encrypted_password text,
     encrypted_master_key text,
     encrypted_master_key_salt text,
