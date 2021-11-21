@@ -1,0 +1,16 @@
+<div
+  fxFill
+  class="buttons"
+  fxLayoutAlign="space-around stretch"
+  fxLayout="column"
+  fxLayout.xs="row"
+>
+  <button
+    *ngFor="let b of buttons"
+    mat-fab
+    [attr.aria-label]="b.Label"
+    (click)="execComd($event,b)"
+  >
+    <mat-icon>{{ b.Icon }}</mat-icon>
+  </button>
+</div>

@@ -29,23 +29,18 @@
       </mat-tab-group>
     </mat-sidenav>
     <mat-sidenav-content>
-      <button
-        id="toggle-right-btn"
-        mat-icon-button
-        aria-label="toggle sidevan"
-        (click)="rightSidenav.toggle()"
+      <div
+        fxFill
+        class="players"
+        fxLayoutAlign="space-around stretch"
+        fxLayout="row"
+        fxLayout.xs="column"
       >
-        <mat-icon>menu</mat-icon>
-      </button>
-      <button
-        id="stream-btn"
-        mat-fab
-        aria-label="start/stop streaming"
-        (click)="toggleStreaming()"
-      >
-        <mat-icon>videocam</mat-icon>
-      </button>
-      <app-players *ngIf="streaming" fxFill></app-players>
+      <div fxFlex>
+        <app-players *ngIf="streaming" fxFill></app-players>
+      </div>
+        <app-buttons [buttons]="buttons"></app-buttons>
+      </div>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </ng-container>
