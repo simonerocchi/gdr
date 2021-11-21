@@ -12,6 +12,8 @@ import (
 // NewCmd creates the "server" subcommand
 func NewCmd() *cobra.Command {
 	var listenAddresses string
+	var sslCert string
+	var sslKey string
 
 	cmd := cobra.Command{
 		Use:   "server [flags]",
@@ -26,7 +28,11 @@ the end of the process, a.k.a. this is not a daemon process.`,
 			}
 			server := createServer()
 			server.Router.PathPrefix("/").Handler(http.FileServer(http.Dir("/app/web")))
-			return server.Serve(listenAddresses)
+			if sslCert == "" || sslKey == "" {
+				return http.ListenAndServe(listenAddresses, &server)
+			} else {
+				return http.ListenAndServeTLS(listenAddresses, sslCert, sslKey, &server)
+			}
 		},
 		Args: cobra.ExactArgs(0),
 	}
@@ -39,6 +45,16 @@ the end of the process, a.k.a. this is not a daemon process.`,
 		"the IP address and port where the server should accept connections, defaults "+
 			"to the value in the LISTEN_ADDRESSES environment variable, i.e. ':8000'",
 	)
+	cmd.PersistentFlags().StringVar(
+		&sslCert,
+		"ssl-cert",
+		os.Getenv("SSL_CERT"),
+		"The ssl certificate address.")
+	cmd.PersistentFlags().StringVar(
+		&sslKey,
+		"ssl-key",
+		os.Getenv("SSL_KEY"),
+		"The ssl key address.")
 
 	return &cmd
 }

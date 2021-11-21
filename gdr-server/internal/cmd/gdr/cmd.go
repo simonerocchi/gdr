@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewCmd return the "presselamicolor" root command
+// NewCmd return the "gdr" root command
 func NewCmd() *cobra.Command {
 	var pgDsn string
 	var production bool
@@ -58,6 +58,5 @@ func NewCmd() *cobra.Command {
 		"production",
 		productionDefault,
 		"Configure the application in production mode, defaults to the PRODUCTION environment variable")
-
 	return &cmd
 }
