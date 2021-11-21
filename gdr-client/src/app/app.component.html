@@ -1,46 +1,44 @@
 <ng-container>
   <app-login *ngIf="!logged" fxFill></app-login>
-  <mat-sidenav-container class="main-container" *ngIf="logged" fxFill>
-    <mat-sidenav
-      #rightSidenav
-      position="end"
-      mode="side"
-      style="max-width: 30%"
-    >
-      <mat-tab-group mat-align-tabs="center" style="height: 100%">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon>chat</mat-icon>
-          </ng-template>
-          <app-chat></app-chat>
-        </mat-tab>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon>person</mat-icon>
-          </ng-template>
-          <app-character style="padding: 5px"></app-character>
-        </mat-tab>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <mat-icon>person_add</mat-icon>
-          </ng-template>
-          <app-add-user></app-add-user>
-        </mat-tab>
-      </mat-tab-group>
-    </mat-sidenav>
-    <mat-sidenav-content>
-      <div
-        fxFill
-        class="players"
-        fxLayoutAlign="space-around stretch"
-        fxLayout="row"
-        fxLayout.xs="column"
+  <div
+    *ngIf="logged"
+    fxFill
+    fxLayoutAlign="space-around stretch"
+    fxLayout="row"
+    fxLayout.xs="column"
+    class="main-container"
+  >
+    <mat-sidenav-container fxFlex>
+      <mat-sidenav
+        #rightSidenav
+        position="end"
+        mode="over"
       >
-      <div fxFlex>
+        <mat-tab-group mat-align-tabs="center" style="height: 100%">
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>chat</mat-icon>
+            </ng-template>
+            <app-chat></app-chat>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>person</mat-icon>
+            </ng-template>
+            <app-character style="padding: 5px"></app-character>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>person_add</mat-icon>
+            </ng-template>
+            <app-add-user></app-add-user>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-sidenav>
+      <mat-sidenav-content>
         <app-players *ngIf="streaming" fxFill></app-players>
-      </div>
-        <app-buttons [buttons]="buttons"></app-buttons>
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+    <app-buttons [buttons]="buttons"></app-buttons>
+  </div>
 </ng-container>
