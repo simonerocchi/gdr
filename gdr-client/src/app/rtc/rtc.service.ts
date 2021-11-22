@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Subject, Subscription } from 'rxjs';
 import { LoginService } from './../login/login.service';
 import { SignalingService } from './../signaling/signaling.service';
 import { Injectable } from '@angular/core';
@@ -10,6 +10,7 @@ import {
   TipoMessaggio,
 } from '../model/messaggio.model';
 import { Player } from '../model/player.model';
+import { switchMap } from 'rxjs/operators';
 
 enum cameraMode {
   user = 'user',
@@ -37,6 +38,9 @@ export class RTCService {
   streamUnavailable = (() => this._streamUnavailable.asObservable())();
   private _streaming = new BehaviorSubject<boolean>(false);
   streaming = (() => this._streaming.asObservable())();
+  get availableDevices() {
+    return from(navigator.mediaDevices.enumerateDevices());
+  }
   myStream?: Player;
   get mediaConstraint(): any {
     return {
@@ -117,7 +121,7 @@ export class RTCService {
 
   stopStreaming(): void {
     let id = this.login.currentUser!.ID;
-    this.myStream?.MediaStream?.getTracks().forEach(t => t.stop());
+    this.myStream?.MediaStream?.getTracks().forEach((t) => t.stop());
     this.myStream = undefined;
     this.signaling.send(<Messaggio>{
       UtenteID: id,
@@ -158,6 +162,18 @@ export class RTCService {
     }
   }
 
+  changeDevice(device: MediaDeviceInfo) {
+
+  }
+
+  private addTracks(pc: RTCPeerConnection) {
+    this.myStream?.MediaStream?.getTracks().forEach(
+      (track: MediaStreamTrack) => {
+        pc.addTrack(track);
+      }
+    );
+  }
+
   private createPerrConnection(id: number): RTCPeerConnection {
     let pc = new RTCPeerConnection(RTC_CONFIGURATION);
     this.peerConnections.set(id, pc);
@@ -168,9 +184,7 @@ export class RTCService {
     pc.onicecandidate = (event) => this.didDiscoverIceCandidate(event, id);
     pc.onconnectionstatechange = () => this.connectionStateDidChange(id);
     pc.oniceconnectionstatechange = () => this.iceConnectionStateDidChange(id);
-    this.myStream?.MediaStream?.getTracks().forEach((track: MediaStreamTrack) => {
-      pc.addTrack(track);
-    });
+    this.addTracks(pc);
     pc.onicecandidateerror = (ev) =>
       console.log('onicecandidateerror', 'error type: ' + ev.type);
     return pc;

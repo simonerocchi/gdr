@@ -21,13 +21,13 @@
             <ng-template mat-tab-label>
               <mat-icon>person</mat-icon>
             </ng-template>
-            <ng-container *ngIf="characters.length == 1">
+            <ng-container *ngIf="!isMaster">
               <app-character
                 fxFill
                 [characterID]="characters[0].ID"
               ></app-character>
             </ng-container>
-            <ng-container *ngIf="characters.length > 1">
+            <ng-container *ngIf="isMaster">
               <mat-accordion fxFill>
                 <mat-expansion-panel
                   hideToggle
@@ -40,18 +40,10 @@
                     </mat-panel-title>
                     <mat-panel-description fxLayout="row">
                       <div fxFlex></div>
-                      <button
-                        mat-button
-                        color="primary"
-                        (click)="setMaster(c)"
-                      >
+                      <button mat-button color="primary" (click)="setMaster(c)">
                         MASTER
                       </button>
-                      <button
-                        mat-button
-                        color="primary"
-                        (click)="remove(c)"
-                      >
+                      <button mat-button color="primary" (click)="remove(c)">
                         <mat-icon>delete</mat-icon>
                       </button>
                     </mat-panel-description>
@@ -59,15 +51,14 @@
                   <app-character fxFill [characterID]="c.ID"></app-character>
                 </mat-expansion-panel>
 
-                <mat-expansion-panel
-                  hideToggle
-                >
+                <mat-expansion-panel hideToggle>
                   <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      AGGIUNGI GIOCATORE
-                    </mat-panel-title>
+                    <mat-panel-title> AGGIUNGI GIOCATORE </mat-panel-title>
                   </mat-expansion-panel-header>
-                  <app-add-user fxFill></app-add-user>
+                  <app-add-user
+                    fxFill
+                    (added)="loadCharacters()"
+                  ></app-add-user>
                 </mat-expansion-panel>
               </mat-accordion>
             </ng-container>

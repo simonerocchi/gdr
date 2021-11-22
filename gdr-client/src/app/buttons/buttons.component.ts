@@ -5,7 +5,7 @@ export interface CmdButton {
   Name: string;
   Label?: string;
   Icon: string;
-  Click: (event: any) => void;
+  Click?: (event: any) => void;
 }
 
 @Component({
@@ -22,7 +22,7 @@ export class ButtonsComponent implements OnInit {
 
   execComd(event: any, button: CmdButton) {
     console.log("execCmd",button);
-    button.Click(event);
+    button.Click!(event);
   }
 
 }

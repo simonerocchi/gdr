@@ -9,6 +9,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Utente } from './model/utente.model';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { MenuCommand } from './buttons/commands/menu.command';
+import { DeviceInfoMenuCommand } from './buttons/commands/device-info-menu.command';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +20,9 @@ import { Observable } from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'Squid System';
   _logged: boolean = false;
+  get isMaster(): boolean {
+    return this.login.currentUser?.IsMaster || false;
+  }
   get logged(): boolean {
     return this._logged;
   }
@@ -35,7 +40,7 @@ export class AppComponent implements OnInit {
   buttons?: CmdButton[];
   characters: Utente[] = [];
   @ViewChild('rightSidenav') sidevan?: MatSidenav;
-  private menus = new Map<string, SubjectCommand[]>();
+  private menus = new Map<string, CmdButton[]>();
   constructor(
     private login: LoginService,
     private rtc: RTCService,
@@ -82,6 +87,7 @@ export class AppComponent implements OnInit {
           this.buttons = this.menus?.get('main');
         }
       ),
+      new DeviceInfoMenuCommand(this.rtc,"devices","video"),
       new SubjectCommand(
         {
           Name: 'stream-off',
@@ -94,6 +100,7 @@ export class AppComponent implements OnInit {
         }
       ),
     ]);
+
   }
 
   loadCharacters() {
