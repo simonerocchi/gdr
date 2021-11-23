@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 export class PlayersComponent implements OnInit {
   streamers: Player[] = [];
   private _logged: boolean = false;
+  ontopPlayer?: Player
   set logged(value: boolean) {
     this._logged = value;
     if (value) {
@@ -30,13 +31,14 @@ export class PlayersComponent implements OnInit {
   }
 
   get others(): Player[][] {
+    const list = this.streamers.filter(p => p.ID != this.ontopPlayer?.ID);
     const colLength: number = 2;
     const rowLength =
-      (this.streamers.length - (this.streamers.length % colLength)) / colLength +
-      (this.streamers.length % colLength);
+      (list.length - (list.length % colLength)) / colLength +
+      (list.length % colLength);
     let rows: Player[][] = [];
-    for (let r = 0; r < Math.min(colLength, this.streamers.length); r++) {
-      let row: Player[] = this.streamers.slice(
+    for (let r = 0; r < Math.min(colLength, list.length); r++) {
+      let row: Player[] = list.slice(
         r * rowLength,
         r * rowLength + rowLength
       );

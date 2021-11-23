@@ -14,9 +14,16 @@
       fxLayoutAlign="space-around stretch"
       *ngFor="let c of others"
     >
-      <app-player [player]="p" fxFlex *ngFor="let p of c"></app-player>
+      <div fxFlex (click)="ontopPlayer = p" *ngFor="let p of c">
+        <app-player [player]="p" fxFill></app-player>
+      </div>
     </div>
   </ng-container>
-  <div *ngIf="others.length == 0" fxFill>Non c'è nessuno</div>
+  <div (click)="ontopPlayer = undefined" fxFill>
+    <app-player [player]="ontopPlayer" fxFill></app-player>
+  </div>
+  <div *ngIf="others.length == 0 && ontopPlayer == undefined" fxFill>
+    Non c'è nessuno
+  </div>
   <app-player [player]="me" class="me"></app-player>
 </div>
