@@ -1,22 +1,22 @@
 <div
-  fxLayout="column"
-  fxLayout.xs="row"
+  fxLayout="row"
+  fxLayout.xs="column"
   fxFill
   [ngClass]="{ hidden: ontopPlayer }"
 >
   <div
     class="players-row"
     fxFlex
-    fxLayout="row"
-    fxLayout.xs="column"
+    fxLayout="column"
+    fxLayout.xs="row"
     fxLayoutAlign="space-around stretch"
     *ngFor="let c of others"
   >
     <div
       class="players-row"
       fxFlex
-      fxLayout="column"
-      fxLayout.xs="row"
+      fxLayout="row"
+      fxLayout.xs="column"
       fxLayoutAlign="space-around stretch"
       *ngFor="let p of c"
       (click)="ontopPlayer = p"
