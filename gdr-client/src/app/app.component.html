@@ -15,19 +15,19 @@
             <ng-template mat-tab-label>
               <mat-icon>chat</mat-icon>
             </ng-template>
-            <app-chat></app-chat>
+            <app-chat fxFill></app-chat>
           </mat-tab>
           <mat-tab>
             <ng-template mat-tab-label>
               <mat-icon>person</mat-icon>
             </ng-template>
-            <ng-container *ngIf="characters.length == 1">
+            <ng-container *ngIf="!isMaster">
               <app-character
                 fxFill
                 [characterID]="characters[0].ID"
               ></app-character>
             </ng-container>
-            <ng-container *ngIf="characters.length > 1">
+            <ng-container *ngIf="isMaster">
               <mat-accordion fxFill>
                 <mat-expansion-panel
                   hideToggle
@@ -86,7 +86,11 @@
         </button>
         <mat-menu #videoMenu="matMenu">
           <button mat-menu-item (click)="changeVideoDevice()">NO VIDEO</button>
-          <button mat-menu-item *ngFor="let d of availableVideos" (click)="changeVideoDevice(d)">
+          <button
+            mat-menu-item
+            *ngFor="let d of availableVideos"
+            (click)="changeVideoDevice(d)"
+          >
             {{ d.label }}
           </button>
         </mat-menu>
@@ -95,12 +99,30 @@
         </button>
         <mat-menu #audioMenu="matMenu">
           <button mat-menu-item (click)="changeAudioDevice()">NO AUDIO</button>
-          <button mat-menu-item *ngFor="let d of availableAudios" (click)="changeAudioDevice(d)">
+          <button
+            mat-menu-item
+            *ngFor="let d of availableAudios"
+            (click)="changeAudioDevice(d)"
+          >
+            {{ d.label }}
+          </button>
+        </mat-menu>
+        <button mat-fab [matMenuTriggerFor]="outputMenu" color="primary">
+          <mat-icon>volume_up</mat-icon>
+        </button>
+        <mat-menu #outputMenu="matMenu">
+          <button
+            mat-menu-item
+            *ngFor="let d of availableOutputs"
+            (click)="changeAudioOutput(d)"
+          >
             {{ d.label }}
           </button>
         </mat-menu>
         <button mat-fab color="primary" (click)="toggleSharing()">
-          <mat-icon>{{ isSharingStream ? 'cancel_presentation' : 'present_to_all'}}</mat-icon>
+          <mat-icon>{{
+            isSharingStream ? "cancel_presentation" : "present_to_all"
+          }}</mat-icon>
         </button>
       </ng-container>
       <button mat-fab (click)="rightSidenav?.toggle()" color="primary">

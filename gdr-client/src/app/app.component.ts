@@ -41,12 +41,20 @@ export class AppComponent implements OnInit {
     return this.rtc.availableDevices?.filter(d => d.kind == 'videoinput');
   }
 
+  get availableOutputs() {
+    return this.rtc.availableDevices?.filter(d => d.kind == 'audiooutput');
+  }
+
   get readyToStream() {
     return this.rtc.ready;
   }
 
   get isSharingStream() {
     return this.rtc.isSharingScreen;
+  }
+
+  get isMaster() {
+    return this.login.currentUser?.IsMaster;
   }
 
   constructor(
@@ -120,5 +128,9 @@ export class AppComponent implements OnInit {
 
   changeAudioDevice(device?: MediaDeviceInfo) {
     this.rtc.changeAudioDevice(device);
+  }
+
+  changeAudioOutput(device: MediaDeviceInfo) {
+    this.rtc.changeAudioOutput(device);
   }
 }

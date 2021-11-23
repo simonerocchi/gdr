@@ -45,6 +45,11 @@ export class RTCService {
 
   availableDevices?: MediaDeviceInfo[];
 
+  private _audioOutput = new BehaviorSubject<MediaDeviceInfo | undefined>(undefined);
+  get audioOutput() {
+    return this._audioOutput.asObservable();
+  }
+
   ready = new BehaviorSubject<boolean>(false);
 
   private mediaConstraint?: MediaStreamConstraints = {};
@@ -117,13 +122,17 @@ export class RTCService {
         const audio = this.availableDevices.filter(
           (d) => d.kind == 'audioinput'
         )[0];
-        if (video != undefined && audio != undefined) {
+        const output = this.availableDevices.filter(
+          (d) => d.kind == 'audiooutput'
+        )[0];
+        if (video != undefined && audio != undefined && output != undefined) {
           this.mediaConstraint!.video = {
             deviceId: video.deviceId ? { exact: video.deviceId } : undefined,
           };
           this.mediaConstraint!.audio = {
             deviceId: audio.deviceId ? { exact: audio.deviceId } : undefined,
           };
+          this._audioOutput.next(output);
           this.ready.next(true);
         }
       }
@@ -259,6 +268,10 @@ export class RTCService {
     if (this._streaming.value) {
       this.startStreaming();
     }
+  }
+
+  changeAudioOutput(device: MediaDeviceInfo) {
+    this._audioOutput.next(device);
   }
 
   async startSharingScreen() {
