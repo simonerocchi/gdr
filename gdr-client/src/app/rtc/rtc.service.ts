@@ -67,7 +67,7 @@ export class RTCService {
   }
 
   set hidden(value: boolean) {
-    if (value) {
+    if (!value) {
       this.changeVideoDevice(this.prevVideoDevice);
     } else {
       let video = this.mediaConstraint?.video as MediaTrackConstraints;
@@ -125,7 +125,7 @@ export class RTCService {
         const output = this.availableDevices.filter(
           (d) => d.kind == 'audiooutput'
         )[0];
-        if (video != undefined && audio != undefined && output != undefined) {
+        if (video != undefined && audio != undefined) {
           this.mediaConstraint!.video = {
             deviceId: video.deviceId ? { exact: video.deviceId } : undefined,
           };
@@ -285,22 +285,6 @@ export class RTCService {
   stopSharingScreen() {
     this.hidden = false;
     this.isSharingScreen = false;
-  }
-
-  /**
-   * metodo per cambiare videocamera.   TODO da testare
-   * @param camera stringa definita in cameraMode
-   */
-  private switchCameras(camera: cameraMode) {
-    let traks = this.myStream!.MediaStream!.getTracks();
-    for (var i = 0; i < traks.length; i++) {
-      let track = traks[i];
-      let constraints = track.getConstraints();
-      if (constraints.facingMode) {
-        constraints.facingMode = camera;
-      }
-      track.applyConstraints(constraints);
-    }
   }
 
   private createPerrConnection(id: number): RTCPeerConnection {

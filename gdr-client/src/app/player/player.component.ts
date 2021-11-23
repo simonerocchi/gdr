@@ -22,8 +22,11 @@ export class PlayerComponent implements OnInit {
   constructor(private rtc: RTCService, private login: LoginService) {}
 
   ngOnInit() {
-    this.rtc.audioOutput.subscribe((o) =>
-      (this.videoElement as any).setSinkId(o?.deviceId)
+    this.rtc.audioOutput.subscribe((o) => {
+      if (o && typeof this.videoElement.sinkId !== 'undefined') {
+        (this.videoElement as any).setSinkId(o?.deviceId);
+      }
+    }
     );
   }
 }

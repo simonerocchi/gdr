@@ -13,7 +13,24 @@ import { Observable } from 'rxjs';
 export class PlayersComponent implements OnInit {
   streamers: Player[] = [];
   private _logged: boolean = false;
-  ontopPlayer?: Player
+  private _ontopId?: number;
+  get ontopPlayer(): Player | undefined {
+    if (this.streamers.length == 1) {
+      this._ontopId = undefined;
+      return this.streamers[0];
+    } else if (this._ontopId) {
+      return this.streamers.find((p) => p.ID == this._ontopId);
+    }
+    return undefined;
+  }
+  set ontopPlayer(value: Player | undefined) {
+    if (value) {
+      this._ontopId = value.ID;
+    } else {
+      this._ontopId = undefined;
+    }
+  }
+
   set logged(value: boolean) {
     this._logged = value;
     if (value) {
@@ -31,17 +48,14 @@ export class PlayersComponent implements OnInit {
   }
 
   get others(): Player[][] {
-    const list = this.streamers.filter(p => p.ID != this.ontopPlayer?.ID);
+    const list = this.streamers.filter((p) => p.ID != this.ontopPlayer?.ID);
     const colLength: number = 2;
     const rowLength =
       (list.length - (list.length % colLength)) / colLength +
       (list.length % colLength);
     let rows: Player[][] = [];
     for (let r = 0; r < Math.min(colLength, list.length); r++) {
-      let row: Player[] = list.slice(
-        r * rowLength,
-        r * rowLength + rowLength
-      );
+      let row: Player[] = list.slice(r * rowLength, r * rowLength + rowLength);
       rows.push(row);
     }
     return rows;
@@ -51,10 +65,7 @@ export class PlayersComponent implements OnInit {
     return this.rtc.myStream;
   }
 
-  constructor(
-    private login: LoginService,
-    private rtc: RTCService
-  ) {}
+  constructor(private login: LoginService, private rtc: RTCService) {}
 
   ngOnInit(): void {
     this.login.userAccess

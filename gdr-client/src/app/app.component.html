@@ -91,7 +91,7 @@
             *ngFor="let d of availableVideos"
             (click)="changeVideoDevice(d)"
           >
-            {{ d.label }}
+            {{ d.label || "Default" }}
           </button>
         </mat-menu>
         <button mat-fab [matMenuTriggerFor]="audioMenu" color="primary">
@@ -104,7 +104,7 @@
             *ngFor="let d of availableAudios"
             (click)="changeAudioDevice(d)"
           >
-            {{ d.label }}
+            {{ d.label || "Default" }}
           </button>
         </mat-menu>
         <button mat-fab [matMenuTriggerFor]="outputMenu" color="primary">
@@ -116,7 +116,7 @@
             *ngFor="let d of availableOutputs"
             (click)="changeAudioOutput(d)"
           >
-            {{ d.label }}
+            {{ d.label || "Default" }}
           </button>
         </mat-menu>
         <button mat-fab color="primary" (click)="toggleSharing()">
