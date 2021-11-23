@@ -15,9 +15,7 @@ export class PlayerComponent implements OnInit {
     return this.videoElement.nativeElement;
   }
 
-  get itsMe(): boolean {
-    return this.login.currentUser?.ID == this.player?.ID;
-  }
+  @Input() itsMe: boolean = false;
 
   constructor(private rtc: RTCService, private login: LoginService) {}
 

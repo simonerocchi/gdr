@@ -25,12 +25,7 @@
     </div>
   </div>
 </div>
-<div
-  *ngIf="ontopPlayer"
-  fxFill
-  (click)="ontopPlayer = undefined"
-  class="ontop"
->
+<div *ngIf="ontopPlayer" fxFill (click)="ontopPlayer = undefined" class="ontop">
   <app-player [player]="ontopPlayer" fxFill></app-player>
 </div>
-<div class="me"><app-player [player]="me"></app-player></div>
+<div class="me"><app-player [player]="me" [itsMe]="true"></app-player></div>
