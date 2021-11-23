@@ -1,5 +1,13 @@
 import { Utente } from './utente.model';
 
+export interface RollResult {
+  V: number;
+  Dices: number[];
+  Choices: number[];
+  Result: number;
+  Critic?: boolean;
+}
+
 export interface Messaggio {
   ID?: number,
   Content: {},
@@ -18,7 +26,7 @@ export interface StatoContent {
 
 export interface ChatContent {
   Testo: string
-  Dice?: number[]
+  Dice?: RollResult
 }
 
 export interface IceCandidateContent {

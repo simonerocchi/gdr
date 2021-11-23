@@ -8,11 +8,11 @@
   <div fxFlex="5%" fxLayout="row" fxLayoutAlign="space-around center">
     <div
       fxFlex="nogrow"
-      *ngFor="let n of [1, 2, 3, 4, 5, 6]"
-      (click)="roll(n)"
+      *ngFor="let v of [-2, -1, 0, 1, 2]"
+      (click)="roll(v)"
       class="roll-btn"
     >
-      {{ n }}d6
+      {{ v }}
     </div>
   </div>
   <form

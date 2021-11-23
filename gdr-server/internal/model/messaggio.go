@@ -44,7 +44,7 @@ func (m *Messaggio) Process() error {
 		}
 		text := t.(string)
 		if strings.HasPrefix(text, "/roll ") {
-			res := []int{}
+			var res roll.RollResult
 			var err error
 			if res, err = roll.Roll(text); err != nil {
 				m.Content["Testo"] = text + " non è un tiro valido"

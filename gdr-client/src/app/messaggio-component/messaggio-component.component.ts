@@ -1,4 +1,4 @@
-import { Messaggio, StatoContent, ChatContent, TipoMessaggio } from './../model/messaggio.model';
+import { Messaggio, StatoContent, ChatContent, TipoMessaggio, RollResult } from './../model/messaggio.model';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
@@ -24,10 +24,12 @@ export class MessaggioComponentComponent implements OnInit {
   }
 
   get hasDice(): boolean {
-    return (this.messaggio.Content as ChatContent).Dice != undefined && (this.messaggio.Content as ChatContent).Dice!.length > 0;
+    return (this.messaggio.Content as ChatContent).Dice != undefined;
   }
 
-  get dice(): number[] {
-    return (this.messaggio.Content as ChatContent).Dice!;
+  get dice(): RollResult | undefined {
+    const cc = this.messaggio.Content as ChatContent;
+    const d = cc.Dice
+    return d;
   }
 }
