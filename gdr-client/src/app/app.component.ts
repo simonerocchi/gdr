@@ -8,7 +8,7 @@ import { SubjectCommand } from './buttons/commands/subject.command';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Utente } from './model/utente.model';
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -29,71 +29,39 @@ export class AppComponent implements OnInit {
     } else {
       this.signaling.stopSignaling();
     }
-    this.buttons = this.menus?.get('main');
   }
   streaming: boolean = false;
-  buttons?: CmdButton[];
   characters: Utente[] = [];
-  @ViewChild('rightSidenav') sidevan?: MatSidenav;
-  private menus = new Map<string, SubjectCommand[]>();
+
+  get availableAudios() {
+    return this.rtc.availableDevices?.filter(d =>  d.kind == 'audioinput');
+  }
+
+  get availableVideos() {
+    return this.rtc.availableDevices?.filter(d => d.kind == 'videoinput');
+  }
+
+  get readyToStream() {
+    return this.rtc.ready;
+  }
+
+  get isSharingStream() {
+    return this.rtc.isSharingScreen;
+  }
+
   constructor(
     private login: LoginService,
     private rtc: RTCService,
     private signaling: SignalingService,
     private http: HttpClient
   ) {}
+
   ngOnInit(): void {
     this.login.userAccess.asObservable().subscribe((utente) => {
       this.logged = utente != null;
       this.loadCharacters();
     });
-    this.menus?.set('main', [
-      new SubjectCommand(
-        {
-          Name: 'streaming-main',
-          Icon: 'videocam',
-          Label: 'stream on',
-        },
-        () => {
-          if (this.streaming) {
-            this.buttons = this.menus?.get('stream');
-          } else {
-            this.rtc.startStreaming();
-          }
-        }
-      ),
-      new SubjectCommand(
-        {
-          Name: 'sidenav-toggle',
-          Icon: 'menu',
-          Label: 'sidenav toggle',
-        },
-        () => this.sidevan?.toggle()
-      ),
-    ]);
-    this.menus?.set('stream', [
-      new SubjectCommand(
-        {
-          Name: 'stream-back',
-          Icon: 'close',
-          Label: 'back',
-        },
-        () => {
-          this.buttons = this.menus?.get('main');
-        }
-      ),
-      new SubjectCommand(
-        {
-          Name: 'stream-off',
-          Icon: 'videocam_off',
-          Label: 'stop streaming',
-        },
-        () => {
-          this.rtc.stopStreaming();
-          this.buttons = this.menus?.get('main');
-        }
-      ),
-    ]);
+
   }
 
   loadCharacters() {
@@ -128,5 +96,29 @@ export class AppComponent implements OnInit {
     this.http
       .delete(environment.apiurl + '/utenti/' + utente.ID)
       .subscribe(() => this.loadCharacters());
+  }
+
+  toggleStreaming() {
+    if(this.streaming) {
+      this.rtc.stopStreaming();
+    } else {
+      this.rtc.startStreaming();
+    }
+  }
+
+  toggleSharing() {
+    if (!this.isSharingStream) {
+      this.rtc.startSharingScreen();
+    } else {
+      this.rtc.stopSharingScreen();
+    }
+  }
+
+  changeVideoDevice(device?: MediaDeviceInfo) {
+    this.rtc.changeVideoDevice(device);
+  }
+
+  changeAudioDevice(device?: MediaDeviceInfo) {
+    this.rtc.changeAudioDevice(device);
   }
 }

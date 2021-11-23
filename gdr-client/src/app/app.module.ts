@@ -14,6 +14,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatMenuModule } from '@angular/material/menu';
 import { AddUserCompoentComponent } from './add-user-compoent/add-user-compoent.component';
 import { LoginCompoentComponent } from './login-compoent/login-compoent.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -53,6 +54,7 @@ import { ButtonsComponent } from './buttons/buttons.component';
     MatCardModule,
     MatDividerModule,
     MatExpansionModule,
+    MatMenuModule,
     FlexLayoutModule,
     CommonModule,
     MatButtonModule

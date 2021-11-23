@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, from, Observable, of, Subject, Subscription } from 'rxjs';
 import { LoginService } from './../login/login.service';
 import { SignalingService } from './../signaling/signaling.service';
 import { Injectable } from '@angular/core';
@@ -31,85 +31,163 @@ export class RTCService {
     RTCPeerConnection
   >();
   private streamingSubscription: Subscription | undefined;
+
   private _streamAvailable = new Subject<Player>();
   streamAvailable = (() => this._streamAvailable.asObservable())();
+
   private _streamUnavailable = new Subject<Player>();
   streamUnavailable = (() => this._streamUnavailable.asObservable())();
+
   private _streaming = new BehaviorSubject<boolean>(false);
   streaming = (() => this._streaming.asObservable())();
+
   myStream?: Player;
-  get mediaConstraint(): any {
-    return {
-      video: {
-        facingMode: this.front ? cameraMode.user : cameraMode.environment,
-      },
-      audio: true,
-    };
-  }
-  _front: boolean = true; // gestisce la selezione della videocamera frontale o principale
 
-  get front(): boolean {
-    return this._front;
+  availableDevices?: MediaDeviceInfo[];
+
+  ready = new BehaviorSubject<boolean>(false);
+
+  private mediaConstraint?: MediaStreamConstraints = {};
+
+  private _prevVideoDevice?: MediaDeviceInfo;
+  private get prevVideoDevice(): MediaDeviceInfo | undefined {
+    return (
+      this._prevVideoDevice ||
+      this.availableDevices?.filter((d) => d.kind == 'videoinput')[0]
+    );
   }
 
-  set front(val: boolean) {
-    this._front = val;
-    this.switchCameras(val ? cameraMode.user : cameraMode.environment);
+  get hidden(): boolean {
+    return !!!this.mediaConstraint?.video;
   }
+
+  set hidden(value: boolean) {
+    if (value) {
+      this.changeVideoDevice(this.prevVideoDevice);
+    } else {
+      let video = this.mediaConstraint?.video as MediaTrackConstraints;
+      if (video) {
+        this._prevVideoDevice = this.availableDevices?.find(
+          (d) => d.deviceId == video.deviceId
+        );
+      }
+      this.changeVideoDevice(undefined);
+    }
+  }
+
+  private _prevAudioDevice?: MediaDeviceInfo;
+  private get prevAudioDevice(): MediaDeviceInfo | undefined {
+    return (
+      this._prevAudioDevice ||
+      this.availableDevices?.filter((d) => d.kind == 'audioinput')[0]
+    );
+  }
+
+  get mute(): boolean {
+    return !!!this.mediaConstraint?.audio;
+  }
+
+  set mute(value: boolean) {
+    if (value) {
+      this.changeAudioDevice(this.prevAudioDevice);
+    } else {
+      let audio = this.mediaConstraint?.audio as MediaTrackConstraints;
+      if (audio) {
+        this._prevAudioDevice = this.availableDevices?.find(
+          (d) => d.deviceId == audio.deviceId
+        );
+      }
+      this.changeAudioDevice(undefined);
+    }
+  }
+
+  isSharingScreen: boolean = false;
 
   constructor(
     private signaling: SignalingService,
     private login: LoginService
   ) {
     this.signaling.close.subscribe(() => this.stopStreaming());
+    from(navigator.mediaDevices.enumerateDevices()).subscribe(
+      (mediaDevices) => {
+        this.availableDevices = mediaDevices;
+        const video = this.availableDevices.filter(
+          (d) => d.kind == 'videoinput'
+        )[0];
+        const audio = this.availableDevices.filter(
+          (d) => d.kind == 'audioinput'
+        )[0];
+        if (video != undefined && audio != undefined) {
+          this.mediaConstraint!.video = {
+            deviceId: video.deviceId ? { exact: video.deviceId } : undefined,
+          };
+          this.mediaConstraint!.audio = {
+            deviceId: audio.deviceId ? { exact: audio.deviceId } : undefined,
+          };
+          this.ready.next(true);
+        }
+      }
+    );
   }
-  startStreaming() {
+  startStreaming(mediaDeviceObservable?: Observable<MediaStream>) {
     let id = this.login.currentUser!.ID;
-    navigator.mediaDevices.getUserMedia(this.mediaConstraint).then((stream) => {
+    if(!mediaDeviceObservable) {
+      mediaDeviceObservable = from(navigator.mediaDevices.getUserMedia(this.mediaConstraint));
+    }
+    mediaDeviceObservable.subscribe((stream) => {
       this.myStream = { ID: id, MediaStream: stream };
-      let sub = new Subscription();
-      sub.add(
-        this.signaling.access.subscribe((messaggio) => {
-          if (messaggio.UtenteID == this.login.currentUser?.ID) {
-            return;
+      if (!this._streaming.value) {
+        let sub = new Subscription();
+        sub.add(
+          this.signaling.access.subscribe((messaggio) => {
+            if (messaggio.UtenteID == this.login.currentUser?.ID) {
+              return;
+            }
+            let c = messaggio.Content as StatoContent;
+            if (c.Online && c.Streaming) {
+              this.call(messaggio.UtenteID!);
+            } else {
+              this.streamingStopped(messaggio.UtenteID!);
+            }
+          })
+        );
+        sub.add(
+          this.signaling.message.subscribe((messaggio) => {
+            let id = messaggio.UtenteID!;
+            if (id == this.login.currentUser?.ID) {
+              return;
+            }
+            switch (messaggio.Tipo) {
+              case TipoMessaggio.Offer:
+                this.arriveOffer(id, messaggio);
+                break;
+              case TipoMessaggio.IceCandidate:
+                this.arriveCandidate(id, messaggio);
+                break;
+              case TipoMessaggio.Answer:
+                this.arriveAnswer(id, messaggio);
+                break;
+              default:
+                break;
+            }
+          })
+        );
+        this.streamingSubscription = sub;
+        this.signaling.send(<Messaggio>{
+          UtenteID: id,
+          Tipo: TipoMessaggio.Stato,
+          Content: <StatoContent>{
+            Online: true,
+            Streaming: true,
+          },
+        });
+      }
+      this.peerConnections.forEach((pc) => {
+        this.myStream?.MediaStream?.getTracks().forEach(
+          (track: MediaStreamTrack) => {
+            pc.addTrack(track);
           }
-          let c = messaggio.Content as StatoContent;
-          if (c.Online && c.Streaming) {
-            this.call(messaggio.UtenteID!);
-          } else {
-            this.streamingStopped(messaggio.UtenteID!);
-          }
-        })
-      );
-      sub.add(
-        this.signaling.message.subscribe((messaggio) => {
-          let id = messaggio.UtenteID!;
-          if (id == this.login.currentUser?.ID) {
-            return;
-          }
-          switch (messaggio.Tipo) {
-            case TipoMessaggio.Offer:
-              this.arriveOffer(id, messaggio);
-              break;
-            case TipoMessaggio.IceCandidate:
-              this.arriveCandidate(id, messaggio);
-              break;
-            case TipoMessaggio.Answer:
-              this.arriveAnswer(id, messaggio);
-              break;
-            default:
-              break;
-          }
-        })
-      );
-      this.streamingSubscription = sub;
-      this.signaling.send(<Messaggio>{
-        UtenteID: id,
-        Tipo: TipoMessaggio.Stato,
-        Content: <StatoContent>{
-          Online: true,
-          Streaming: true,
-        },
+        );
       });
       this._streaming.next(true);
     });
@@ -117,7 +195,7 @@ export class RTCService {
 
   stopStreaming(): void {
     let id = this.login.currentUser!.ID;
-    this.myStream?.MediaStream?.getTracks().forEach(t => t.stop());
+    this.myStream?.MediaStream?.getTracks().forEach((t) => t.stop());
     this.myStream = undefined;
     this.signaling.send(<Messaggio>{
       UtenteID: id,
@@ -140,6 +218,60 @@ export class RTCService {
       this.streams.delete(id);
       this._streamUnavailable.next({ ID: id });
     }
+  }
+
+  changeAudioDevice(device?: MediaDeviceInfo) {
+    if (device) {
+      this.mediaConstraint!.audio = {
+        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
+      };
+    } else {
+      this.mediaConstraint!.audio = undefined;
+    }
+    if (this._streaming.value) {
+      this.startStreaming();
+    }
+  }
+
+  changeVideoDevice(device?: MediaDeviceInfo) {
+    if (device) {
+      this.mediaConstraint!.video = {
+        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
+      };
+    } else {
+      this.mediaConstraint!.video = undefined;
+    }
+    if (this._streaming.value) {
+      this.startStreaming();
+    }
+  }
+
+  changeMediaDevice(device: MediaDeviceInfo) {
+    if (device.kind == 'videoinput') {
+      this.mediaConstraint!.video = {
+        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
+      };
+    } else if (device.kind == 'audioinput') {
+      this.mediaConstraint!.audio = {
+        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
+      };
+    }
+    if (this._streaming.value) {
+      this.startStreaming();
+    }
+  }
+
+  async startSharingScreen() {
+    this.hidden = true;
+    const mediaDevices = navigator.mediaDevices as any;
+    const stream = await mediaDevices.getDisplayMedia();
+    this.startStreaming(of(stream));
+    this.isSharingScreen = true;
+  }
+
+  stopSharingScreen() {
+    this.hidden = false;
+    this.isSharingScreen = false;
   }
 
   /**
@@ -168,9 +300,11 @@ export class RTCService {
     pc.onicecandidate = (event) => this.didDiscoverIceCandidate(event, id);
     pc.onconnectionstatechange = () => this.connectionStateDidChange(id);
     pc.oniceconnectionstatechange = () => this.iceConnectionStateDidChange(id);
-    this.myStream?.MediaStream?.getTracks().forEach((track: MediaStreamTrack) => {
-      pc.addTrack(track);
-    });
+    this.myStream?.MediaStream?.getTracks().forEach(
+      (track: MediaStreamTrack) => {
+        pc.addTrack(track);
+      }
+    );
     pc.onicecandidateerror = (ev) =>
       console.log('onicecandidateerror', 'error type: ' + ev.type);
     return pc;

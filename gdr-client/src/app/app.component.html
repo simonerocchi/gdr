@@ -40,18 +40,10 @@
                     </mat-panel-title>
                     <mat-panel-description fxLayout="row">
                       <div fxFlex></div>
-                      <button
-                        mat-button
-                        color="primary"
-                        (click)="setMaster(c)"
-                      >
+                      <button mat-button color="primary" (click)="setMaster(c)">
                         MASTER
                       </button>
-                      <button
-                        mat-button
-                        color="primary"
-                        (click)="remove(c)"
-                      >
+                      <button mat-button color="primary" (click)="remove(c)">
                         <mat-icon>delete</mat-icon>
                       </button>
                     </mat-panel-description>
@@ -59,13 +51,9 @@
                   <app-character fxFill [characterID]="c.ID"></app-character>
                 </mat-expansion-panel>
 
-                <mat-expansion-panel
-                  hideToggle
-                >
+                <mat-expansion-panel hideToggle>
                   <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      AGGIUNGI GIOCATORE
-                    </mat-panel-title>
+                    <mat-panel-title> AGGIUNGI GIOCATORE </mat-panel-title>
                   </mat-expansion-panel-header>
                   <app-add-user fxFill></app-add-user>
                 </mat-expansion-panel>
@@ -78,6 +66,46 @@
         <app-players *ngIf="streaming" fxFill></app-players>
       </mat-sidenav-content>
     </mat-sidenav-container>
-    <app-buttons [buttons]="buttons"></app-buttons>
+    <div
+      class="buttons"
+      fxLayoutAlign="space-around stretch"
+      fxLayout="column"
+      fxLayout.xs="row"
+    >
+      <button
+        mat-fab
+        (click)="toggleStreaming()"
+        color="primary"
+        *ngIf="readyToStream"
+      >
+        <mat-icon>{{ streaming ? "call_end" : "call" }}</mat-icon>
+      </button>
+      <ng-container *ngIf="streaming">
+        <button mat-fab [matMenuTriggerFor]="videoMenu" color="primary">
+          <mat-icon>videocam</mat-icon>
+        </button>
+        <mat-menu #videoMenu="matMenu">
+          <button mat-menu-item (click)="changeVideoDevice()">NO VIDEO</button>
+          <button mat-menu-item *ngFor="let d of availableVideos" (click)="changeVideoDevice(d)">
+            {{ d.label }}
+          </button>
+        </mat-menu>
+        <button mat-fab [matMenuTriggerFor]="audioMenu" color="primary">
+          <mat-icon>mic</mat-icon>
+        </button>
+        <mat-menu #audioMenu="matMenu">
+          <button mat-menu-item (click)="changeAudioDevice()">NO AUDIO</button>
+          <button mat-menu-item *ngFor="let d of availableAudios" (click)="changeAudioDevice(d)">
+            {{ d.label }}
+          </button>
+        </mat-menu>
+        <button mat-fab color="primary" (click)="toggleSharing()">
+          <mat-icon>{{ isSharingStream ? 'cancel_presentation' : 'present_to_all'}}</mat-icon>
+        </button>
+      </ng-container>
+      <button mat-fab (click)="rightSidenav?.toggle()" color="primary">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
   </div>
 </ng-container>
