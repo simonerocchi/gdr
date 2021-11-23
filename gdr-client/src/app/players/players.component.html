@@ -1,29 +1,36 @@
 <div
-  fxFill
-  class="players"
-  fxLayoutAlign="space-around stretch"
   fxLayout="column"
   fxLayout.xs="row"
+  fxFill
+  [ngClass]="{ hidden: ontopPlayer }"
 >
-  <ng-container *ngIf="others.length > 1">
+  <div
+    class="players-row"
+    fxFlex
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxLayoutAlign="space-around stretch"
+    *ngFor="let c of others"
+  >
     <div
       class="players-row"
       fxFlex
-      fxLayout="row"
-      fxLayout.xs="column"
+      fxLayout="column"
+      fxLayout.xs="row"
       fxLayoutAlign="space-around stretch"
-      *ngFor="let c of others"
+      *ngFor="let p of c"
+      (click)="ontopPlayer = p"
     >
-      <div fxFlex (click)="ontopPlayer = p" *ngFor="let p of c">
-        <app-player [player]="p" fxFill></app-player>
-      </div>
+      <app-player [player]="p" fxFill></app-player>
     </div>
-  </ng-container>
-  <div (click)="ontopPlayer = undefined" fxFill>
-    <app-player [player]="ontopPlayer" fxFill></app-player>
   </div>
-  <div *ngIf="others.length == 0 && ontopPlayer == undefined" fxFill>
-    Non c'è nessuno
-  </div>
-  <app-player [player]="me" class="me"></app-player>
 </div>
+<div
+  *ngIf="ontopPlayer"
+  fxFill
+  (click)="ontopPlayer = undefined"
+  class="ontop"
+>
+  <app-player [player]="ontopPlayer" fxFill></app-player>
+</div>
+<div class="me"><app-player [player]="me"></app-player></div>

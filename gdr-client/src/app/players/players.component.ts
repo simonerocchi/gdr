@@ -1,9 +1,9 @@
+import { Utente } from './../model/utente.model';
 import { SignalingService } from './../signaling/signaling.service';
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../login/login.service';
 import { Player } from '../model/player.model';
 import { RTCService } from '../rtc/rtc.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-players',
@@ -15,10 +15,7 @@ export class PlayersComponent implements OnInit {
   private _logged: boolean = false;
   private _ontopId?: number;
   get ontopPlayer(): Player | undefined {
-    if (this.streamers.length == 1) {
-      this._ontopId = undefined;
-      return this.streamers[0];
-    } else if (this._ontopId) {
+    if (this._ontopId) {
       return this.streamers.find((p) => p.ID == this._ontopId);
     }
     return undefined;
@@ -48,7 +45,7 @@ export class PlayersComponent implements OnInit {
   }
 
   get others(): Player[][] {
-    const list = this.streamers.filter((p) => p.ID != this.ontopPlayer?.ID);
+    const list = this.streamers.filter((p) => p.ID != this._ontopId);
     const colLength: number = 2;
     const rowLength =
       (list.length - (list.length % colLength)) / colLength +
@@ -71,5 +68,14 @@ export class PlayersComponent implements OnInit {
     this.login.userAccess
       .asObservable()
       .subscribe((utente) => (this.logged = utente != null));
+    // for (let i = 1; i < 5; i++) {
+    //   this.streamers.push(<Player>{
+    //     ID: -i,
+    //     Fake: true,
+    //     Utente: <Utente>{
+    //       Nome: '' + i,
+    //     },
+    //   });
+    // }
   }
 }

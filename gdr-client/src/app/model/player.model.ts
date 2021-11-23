@@ -3,5 +3,6 @@ import { Utente } from "./utente.model";
 
 export interface Player {
   ID: number,
-  MediaStream?: MediaStream
+  MediaStream?: MediaStream,
+  Fake?: boolean,
 }

@@ -1,5 +1,7 @@
 <div class="player" fxFill>
+  <div fxFill *ngIf="player?.Fake">FAKE {{player?.ID}}</div>
   <video
+    fxFill
     #videoElement
     autoplay
     playsinline
