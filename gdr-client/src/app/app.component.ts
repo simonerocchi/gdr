@@ -8,7 +8,7 @@ import { SubjectCommand } from './buttons/commands/subject.command';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Utente } from './model/utente.model';
 import { environment } from 'src/environments/environment';
-import { from, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -57,6 +57,8 @@ export class AppComponent implements OnInit {
     return this.login.currentUser?.IsMaster;
   }
 
+  added = new Subject<void>();
+
   constructor(
     private login: LoginService,
     private rtc: RTCService,
@@ -69,7 +71,7 @@ export class AppComponent implements OnInit {
       this.logged = utente != null;
       this.loadCharacters();
     });
-
+    this.added.subscribe(() => this.loadCharacters());
   }
 
   loadCharacters() {
