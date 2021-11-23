@@ -6,10 +6,15 @@ export interface Scheda {
     Drive: string,
     Level: number,
     XP: number,
-    Traits: string[],
+    Vig: number,
+    Dex: number,
+    Wil: number,
+    Boasts: string[],
     MaxGrit: number,
     Grit: number,
     Conditions: string[],
-    Equipment: string[]
+    Equipment: string[],
+    Coins: number,
+    Armor: number,
   }
 }

@@ -16,19 +16,59 @@
     <mat-label>Drive</mat-label>
     <input matInput placeholder="Drive" formControlName="Drive" />
   </mat-form-field>
-  <mat-form-field appearance="legacy" fxFlex>
-    <mat-label>Level</mat-label>
-    <input matInput placeholder="Level" formControlName="Level" type="number" />
-  </mat-form-field>
-  <mat-form-field appearance="legacy" fxFlex>
-    <mat-label>XP</mat-label>
-    <input matInput placeholder="XP" formControlName="XP" type="number" />
-  </mat-form-field>
+  <div
+    fxLayout="row"
+    fxLayoytGap="5px"
+    fxLayoutAlign="space-around center"
+    fxFlex
+  >
+    <mat-form-field appearance="legacy">
+      <mat-label>XP</mat-label>
+      <input matInput placeholder="XP" formControlName="XP" type="number" />
+    </mat-form-field>
+    <div fxFlex></div>
+    <mat-form-field appearance="legacy">
+      <mat-label>Armor</mat-label>
+      <input
+        matInput
+        placeholder="Armor"
+        formControlName="Armor"
+        type="number"
+      />
+    </mat-form-field>
+  </div>
+  <div
+    fxLayout="row"
+    fxLayoytGap="5px"
+    fxLayoutAlign="space-around center"
+    fxFlex
+  >
+    <div fxFlex>
+      <mat-form-field appearance="legacy">
+        <mat-label>Vig</mat-label>
+        <input matInput placeholder="Vig" formControlName="Vig" type="number" />
+      </mat-form-field>
+    </div>
+    <div fxFlex></div>
+    <div fxFlex>
+      <mat-form-field appearance="legacy">
+        <mat-label>Dex</mat-label>
+        <input matInput placeholder="Dex" formControlName="Dex" type="number" />
+      </mat-form-field>
+    </div>
+    <div fxFlex></div>
+    <div fxFlex>
+      <mat-form-field appearance="legacy">
+        <mat-label>Wil</mat-label>
+        <input matInput placeholder="Wil" formControlName="Wil" type="number" />
+      </mat-form-field>
+    </div>
+  </div>
   <div fxFlex>
     <div fxLayout="row" fxLayoytGap="5px">
-      <mat-label fxFlex>Traits</mat-label>
+      <mat-label fxFlex>Boasts</mat-label>
       <button
-        (click)="addTrait()"
+        (click)="addBoast()"
         fxFlex="nogrow"
         mat-icon-button
         aria-label="add trait"
@@ -38,7 +78,7 @@
       </button>
     </div>
     <div
-      *ngFor="let t of traitsArray.controls; let i = index"
+      *ngFor="let t of boastsArray.controls; let i = index"
       formArrayName="Traits"
       fxLayout="row"
       fxLayoytGap="5px"
@@ -48,7 +88,7 @@
         <input matInput [formControlName]="i" type="string" />
       </mat-form-field>
       <button
-        (click)="removeTrait(i)"
+        (click)="removeBoast(i)"
         fxFlex="nogrow"
         mat-icon-button
         aria-label="delete trait"
@@ -65,11 +105,11 @@
     fxLayoytGap="5px"
     fxLayoutAlign="space-around center"
   >
-    <mat-form-field appearance="legacy" fxFlex>
+    <mat-form-field appearance="legacy">
       <input matInput formControlName="Grit" type="number" />
     </mat-form-field>
-    <div fxFlex>/</div>
-    <mat-form-field appearance="legacy" fxFlex>
+    <div fxFlex style="text-align: center">DI</div>
+    <mat-form-field appearance="legacy">
       <input matInput formControlName="MaxGrit" type="number" />
     </mat-form-field>
   </div>
@@ -144,6 +184,10 @@
       </div>
     </div>
   </div>
+  <mat-form-field appearance="legacy" fxFlex>
+    <mat-label>Coins</mat-label>
+    <input matInput placeholder="Coins" formControlName="Coins" type="number" />
+  </mat-form-field>
   <div fxFlex="nogrow">
     <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
   </div>

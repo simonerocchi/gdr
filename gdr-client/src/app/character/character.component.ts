@@ -1,5 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators, FormArray, AbstractControl } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormArray,
+  AbstractControl,
+} from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
 import { LoginService } from '../login/login.service';
 import { Scheda } from '../model/scheda.model';
@@ -8,13 +14,13 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-character',
   templateUrl: './character.component.html',
-  styleUrls: ['./character.component.scss']
+  styleUrls: ['./character.component.scss'],
 })
 export class CharacterComponent implements OnInit {
-  @Input() characterID?: number
+  @Input() characterID?: number;
   characterForm: FormGroup;
-  get traitsArray(): FormArray {
-    return this.characterForm.get('Traits') as FormArray;
+  get boastsArray(): FormArray {
+    return this.characterForm.get('Boasts') as FormArray;
   }
   get conditionsArray(): FormArray {
     return this.characterForm.get('Conditions') as FormArray;
@@ -24,53 +30,67 @@ export class CharacterComponent implements OnInit {
   }
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.characterForm = fb.group({
-      Name: ['',Validators.required],
-      Archetype: ['',Validators.required],
-      Drive: ['',Validators.required],
-      Level: [0,Validators.required],
-      XP: [0,Validators.required],
-      Traits: fb.array([]),
-      MaxGrit: [0,Validators.required],
-      Grit: [0,Validators.required],
+      Name: ['', Validators.required],
+      Archetype: ['', Validators.required],
+      Drive: ['', Validators.required],
+      XP: [0, Validators.required],
+      Vig: [0, Validators.required],
+      Dex: [0, Validators.required],
+      Wil: [0, Validators.required],
+      Boasts: fb.array([]),
+      MaxGrit: [0, Validators.required],
+      Grit: [0, Validators.required],
       Conditions: fb.array([]),
-      Equipment: fb.array([])
+      Equipment: fb.array([]),
+      Coins: [0, Validators.required],
+      Armor: [0, Validators.required],
     });
-   }
+  }
 
   ngOnInit(): void {
-    this.http.get<Scheda | null>(environment.apiurl + '/schede/' + this.characterID).subscribe(scheda => {
-      if(scheda == null) {
-        this.http.post(environment.apiurl + '/schede',<Scheda> {
-          UtenteID: this.characterID,
-          Scheda: this.characterForm.value
-        }).subscribe();
-      } else {
-        scheda.Scheda.Traits.forEach(t => this.addTrait());
-        scheda.Scheda.Conditions.forEach(t => this.addCondition());
-        scheda.Scheda.Equipment.forEach(t => this.addEquipment());
-        this.characterForm.setValue(scheda.Scheda);
-      }
-    });
+    this.http
+      .get<Scheda | null>(environment.apiurl + '/schede/' + this.characterID)
+      .subscribe((scheda) => {
+        if (scheda == null) {
+          this.http
+            .post<Scheda>(environment.apiurl + '/schede', <Scheda>{
+              UtenteID: this.characterID,
+              Scheda: this.characterForm.value,
+            })
+            .subscribe(nuova => this.setScheda(nuova));
+        } else {
+          this.setScheda(scheda);
+        }
+      });
+  }
+
+  setScheda(scheda: Scheda) {
+    scheda.Scheda.Boasts.forEach((t) => this.addBoast());
+    scheda.Scheda.Conditions.forEach((t) => this.addCondition());
+    scheda.Scheda.Equipment.forEach((t) => this.addEquipment());
+    this.characterForm.patchValue(scheda.Scheda);
   }
 
   onSubmit(): void {
     let scheda = this.characterForm.value;
-    this.http.put(environment.apiurl + '/schede/' + this.characterID,<Scheda> {
-      UtenteID: this.characterID,
-      Scheda: scheda
-    }).subscribe();
+    this.http
+      .put(environment.apiurl + '/schede/' + this.characterID, <Scheda>{
+        UtenteID: this.characterID,
+        Scheda: scheda,
+      })
+      .subscribe();
   }
 
   createArrayItem(): AbstractControl {
-    return this.fb.control('',Validators.required);
+    return this.fb.control('', Validators.required);
   }
 
-  addTrait(): void {
-    this.traitsArray.push(this.createArrayItem());
+  addBoast(): void {
+    this.boastsArray.push(this.createArrayItem());
   }
 
-  removeTrait(i: number) {
-    this.traitsArray.removeAt(i);
+  removeBoast(i: number) {
+    this.boastsArray.removeAt(i);
   }
 
   addCondition(): void {
@@ -88,5 +108,4 @@ export class CharacterComponent implements OnInit {
   removeEquipment(i: number) {
     this.equipmentArray.removeAt(i);
   }
-
 }
