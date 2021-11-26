@@ -1,5 +1,14 @@
+.player {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .player-video {
-  object-fit: fill;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   // max-width: 100%;
   // max-height: 100%;
 }
@@ -8,8 +17,9 @@
     transform: rotateY(180deg);
     -webkit-transform:rotateY(180deg); /* Safari and Chrome */
     -moz-transform:rotateY(180deg); /* Firefox */
-    max-width: 100%;
-    max-height: 100%;
+    z-index: 2000;
+    // max-width: 100%;
+    // max-height: 100%;
 }
 
 .h100 {

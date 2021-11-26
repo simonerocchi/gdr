@@ -26,6 +26,10 @@
   </div>
 </div>
 <div *ngIf="ontopPlayer" fxFill (click)="ontopPlayer = undefined" class="ontop">
-  <app-player [player]="ontopPlayer" fxFill></app-player>
+  <app-player
+    [player]="ontopPlayer"
+    fxFill
+    style="position: relative; width: 100%; height: 100%"
+  ></app-player>
 </div>
 <div class="me"><app-player [player]="me" [itsMe]="true"></app-player></div>

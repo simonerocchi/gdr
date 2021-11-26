@@ -1,11 +1,5 @@
-<div class="player" fxFlex>
-  <div fxFill *ngIf="player?.Fake">FAKE {{ player?.ID }}</div>
+<div class="player">
   <video
-    [ngClass]="{
-      'h100': (videoElement.videoHeight <= videoElement.videoWidth) && !itsMe,
-      'w100': (videoElement.videoWidth <= videoElement.videoHeight) && !itsMe,
-      'my-video': itsMe
-    }"
     #videoElement
     autoplay
     playsinline
