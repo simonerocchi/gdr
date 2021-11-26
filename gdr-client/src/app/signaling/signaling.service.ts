@@ -4,6 +4,7 @@ import { LoginService } from './../login/login.service';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Subject } from 'rxjs';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -25,17 +26,21 @@ export class SignalingService {
     this.signalingSocket.onopen = () => this.open.next();
     this.signalingSocket.onclose = () => this.close.next();
     this.signalingSocket.onmessage = (message) => {
-      let m = <Messaggio>JSON.parse(message.data);
-      switch (m.Tipo) {
-        case TipoMessaggio.Chat:
-          this.chat.next(m);
-          break;
-        case TipoMessaggio.Stato:
-          this.access.next(m);
-          break;
-        default:
-          this.message.next(m);
-          break;
+      try {
+        let m = <Messaggio>JSON.parse(message.data);
+        switch (m.Tipo) {
+          case TipoMessaggio.Chat:
+            this.chat.next(m);
+            break;
+          case TipoMessaggio.Stato:
+            this.access.next(m);
+            break;
+          default:
+            this.message.next(m);
+            break;
+        }
+      } catch (e) {
+        console.error('onmessage', message, e);
       }
     };
   }
