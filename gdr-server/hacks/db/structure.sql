@@ -21,10 +21,11 @@ create table sessioni (
 
 create table messaggi (
     id serial,
-    messaggio jsonb,
+    content jsonb,
     data_ora timestamp without time zone,
     utente_id int,
     tipo text,
+    dest int,
     constraint messaggi_pk primary key (id),
     constraint messaggi_utenti foreign key (utente_id) references utenti(id)
 );
