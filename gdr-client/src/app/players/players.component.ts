@@ -1,5 +1,3 @@
-import { Utente } from './../model/utente.model';
-import { SignalingService } from './../signaling/signaling.service';
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../login/login.service';
 import { Player } from '../model/player.model';
@@ -13,20 +11,7 @@ import { RTCService } from '../rtc/rtc.service';
 export class PlayersComponent implements OnInit {
   streamers: Player[] = [];
   private _logged: boolean = false;
-  private _ontopId?: number;
-  get ontopPlayer(): Player | undefined {
-    if (this._ontopId) {
-      return this.streamers.find((p) => p.ID == this._ontopId);
-    }
-    return undefined;
-  }
-  set ontopPlayer(value: Player | undefined) {
-    if (value) {
-      this._ontopId = value.ID;
-    } else {
-      this._ontopId = undefined;
-    }
-  }
+  ontopId?: number;
 
   set logged(value: boolean) {
     this._logged = value;
@@ -44,20 +29,6 @@ export class PlayersComponent implements OnInit {
     return this._logged;
   }
 
-  get others(): Player[][] {
-    const list = this.streamers.filter((p) => p.ID != this._ontopId);
-    const colLength: number = 2;
-    const rowLength =
-      (list.length - (list.length % colLength)) / colLength +
-      (list.length % colLength);
-    let rows: Player[][] = [];
-    for (let r = 0; r < Math.min(colLength, list.length); r++) {
-      let row: Player[] = list.slice(r * rowLength, r * rowLength + rowLength);
-      rows.push(row);
-    }
-    return rows;
-  }
-
   get me(): Player | undefined {
     return this.rtc.myStream;
   }
@@ -68,14 +39,5 @@ export class PlayersComponent implements OnInit {
     this.login.userAccess
       .asObservable()
       .subscribe((utente) => (this.logged = utente != null));
-    // for (let i = 1; i < 5; i++) {
-    //   this.streamers.push(<Player>{
-    //     ID: -i,
-    //     Fake: true,
-    //     Utente: <Utente>{
-    //       Nome: '' + i,
-    //     },
-    //   });
-    // }
   }
 }

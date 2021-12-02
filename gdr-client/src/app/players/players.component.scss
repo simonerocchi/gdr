@@ -11,10 +11,16 @@
   display: none !important;
 }
 
+.player-container {
+  flex-basis: 50%;
+  display: flex;
+}
+
 .ontop {
   height: 100% !important;
   width: 100% !important;
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 501;
 }
