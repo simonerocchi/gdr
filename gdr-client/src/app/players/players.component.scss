@@ -13,7 +13,9 @@
 
 .player-container {
   flex-basis: 50%;
+  flex-grow: 1;
   display: flex;
+  z-index: 500;
 }
 
 .ontop {
@@ -23,4 +25,5 @@
   top: 0;
   left: 0;
   z-index: 501;
+  background-color: black;
 }
