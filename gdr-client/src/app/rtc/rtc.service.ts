@@ -53,7 +53,10 @@ export class RTCService {
 
   myStream?: Player;
 
-  availableDevices?: MediaDeviceInfo[];
+  private _availableDevices = new BehaviorSubject<MediaDeviceInfo[]>([]);
+  get availableDevices() {
+    return this._availableDevices.asObservable();
+  }
 
   private _audioOutput = new BehaviorSubject<MediaDeviceInfo | undefined>(
     undefined
@@ -103,25 +106,11 @@ export class RTCService {
   inspectDevices() {
     from(navigator.mediaDevices.enumerateDevices()).subscribe(
       (mediaDevices) => {
-        this.availableDevices = mediaDevices;
-        const video = this.availableDevices.filter(
-          (d) => d.kind == 'videoinput'
-        )[0];
-        const audio = this.availableDevices.filter(
-          (d) => d.kind == 'audioinput'
-        )[0];
-        const output = this.availableDevices.filter(
+        this._availableDevices.next(mediaDevices);
+        const output = mediaDevices.filter(
           (d) => d.kind == 'audiooutput'
         )[0];
-        if (video != undefined && audio != undefined) {
-          this.mediaConstraint!.video = {
-            deviceId: video.deviceId ? { exact: video.deviceId } : undefined,
-          };
-          this.mediaConstraint!.audio = {
-            deviceId: audio.deviceId ? { exact: audio.deviceId } : undefined,
-          };
-          this._audioOutput.next(output);
-        }
+        this._audioOutput.next(output);
       }
     );
   }
@@ -256,21 +245,6 @@ export class RTCService {
       },
     };
     this.changeDevice(mc);
-  }
-
-  changeMediaDevice(device: MediaDeviceInfo) {
-    if (device.kind == 'videoinput') {
-      this.mediaConstraint!.video = {
-        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
-      };
-    } else if (device.kind == 'audioinput') {
-      this.mediaConstraint!.audio = {
-        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
-      };
-    }
-    if (this._streaming.value) {
-      this.startStreaming();
-    }
   }
 
   changeAudioOutput(device: MediaDeviceInfo) {

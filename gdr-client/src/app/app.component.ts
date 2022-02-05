@@ -33,17 +33,11 @@ export class AppComponent implements OnInit {
   streaming: boolean = false;
   characters: Utente[] = [];
 
-  get availableAudios() {
-    return this.rtc.availableDevices?.filter(d =>  d.kind == 'audioinput');
-  }
+  availableAudios: MediaDeviceInfo[] = [];
 
-  get availableVideos() {
-    return this.rtc.availableDevices?.filter(d => d.kind == 'videoinput');
-  }
+  availableVideos: MediaDeviceInfo[] = [];
 
-  get availableOutputs() {
-    return this.rtc.availableDevices?.filter(d => d.kind == 'audiooutput');
-  }
+  availableOutputs: MediaDeviceInfo[] = [];
 
   get readyToStream() {
     return this.rtc.ready;
@@ -72,6 +66,11 @@ export class AppComponent implements OnInit {
       this.loadCharacters();
     });
     this.added.subscribe(() => this.loadCharacters());
+    this.rtc.availableDevices.subscribe(devices => {
+      this.availableAudios = devices.filter(d =>  d.kind == 'audioinput');
+      this.availableVideos = devices.filter(d => d.kind == 'videoinput');
+      this.availableOutputs = devices.filter(d => d.kind == 'audiooutput');
+    });
   }
 
   loadCharacters() {
