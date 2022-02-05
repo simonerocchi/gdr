@@ -312,7 +312,7 @@ export class RTCService {
     let stream = new MediaStream();
     this.streams.set(id, stream);
     this._streamAvailable.next({ ID: id, MediaStream: stream });
-    pc.ontrack = (event) => this.connectionDidTrackEvent(id, event.track);
+    pc.ontrack = (event) => this.connectionDidTrackEvent(id, event);
     pc.onicecandidate = (event) => this.didDiscoverIceCandidate(event, id);
     pc.onconnectionstatechange = () => this.connectionStateDidChange(id);
     pc.oniceconnectionstatechange = () => this.iceConnectionStateDidChange(id);
@@ -358,7 +358,9 @@ export class RTCService {
    * @param id id della peerConnection che ha registrato evento ontrack
    * @param track MediaStreamTrack da attaccare al remoteStream legata alla peerConnection con tale id
    */
-  connectionDidTrackEvent(id: number, track: MediaStreamTrack): any {
+  connectionDidTrackEvent(id: number, event: RTCTrackEvent): any {
+    let track = event.track;
+    console.log('RTC: track event type: ' + event.type);
     this.streams.get(id)?.addTrack(track);
   }
 
