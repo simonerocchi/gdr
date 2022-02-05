@@ -202,11 +202,20 @@ export class RTCService {
         });
       }
       this.peerConnections.forEach((pc) => {
-        this.myStream?.MediaStream?.getTracks().forEach(
-          (track: MediaStreamTrack) => {
-            pc.addTrack(track);
+        const myTracks =  this.myStream?.MediaStream?.getTracks();
+        const senders = pc.getSenders();
+        // tolgo quelle in più
+        senders.forEach(s => {
+          if (!myTracks?.some(t => t.id == s.track?.id)) {
+            pc.removeTrack(s);
           }
-        );
+        });
+        // aggiungo quelle che mancano
+        myTracks?.forEach(t => {
+          if(!senders.some(s => s.track?.id == t.id)) {
+            pc.addTrack(t);
+          }
+        });
       });
       this._streaming.next(true);
     });
