@@ -370,7 +370,9 @@ export class RTCService {
   }
 
   private connectionStateDidChange(id: number) {
-    this.peerConnections.get(id)?.close;
+    console.log(
+      'RTC ' + id + ' ' + this.peerConnections.get(id)?.connectionState
+    );
   }
 
   private iceConnectionStateDidChange(id: number) {

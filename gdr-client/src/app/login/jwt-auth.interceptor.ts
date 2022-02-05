@@ -11,9 +11,6 @@ export class JwtAuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // add authorization header with basic auth credentials if available
     const currentLoginInfo = this.loginService.userAccess.value;
-    /*if(!environment.production){
-        console.log(currentLoginInfo);
-    }*/
     if (!request.headers.get("SkipContentType")) {
       request = request.clone({
         setHeaders: {
