@@ -75,44 +75,38 @@
       <button
         mat-fab
         (click)="toggleStreaming()"
-        color="primary"
+        [color]="streaming ? 'red' : 'green'"
         *ngIf="readyToStream"
       >
         <mat-icon>{{ streaming ? "call_end" : "call" }}</mat-icon>
       </button>
       <ng-container *ngIf="streaming">
-        <button mat-fab [matMenuTriggerFor]="videoMenu" color="primary">
-          <mat-icon>videocam</mat-icon>
+        <button mat-fab color="primary" (click)="hidden = !hidden">
+          <mat-icon>{{ hidden ? "videocam" : "videocam_off" }}</mat-icon>
         </button>
-        <mat-menu #videoMenu="matMenu">
-          <button mat-menu-item (click)="hidden = !hidden">NO VIDEO</button>
-          <button
-            mat-menu-item
-            *ngFor="let d of availableVideos"
-            (click)="changeVideoDevice(d)"
-          >
-            {{ d.label || "Default" }}
-          </button>
-        </mat-menu>
-        <button mat-fab [matMenuTriggerFor]="audioMenu" color="primary">
-          <mat-icon>mic</mat-icon>
+        <button
+          mat-fab
+          color="primary"
+          (click)="toggleCamera()"
+          *ngIf="availableVideos.length > 1"
+        >
+          <mat-icon>switch_video</mat-icon>
         </button>
-        <mat-menu #audioMenu="matMenu">
-          <button mat-menu-item (click)="mute = !mute">NO AUDIO</button>
-          <button
-            mat-menu-item
-            *ngFor="let d of availableAudios"
-            (click)="changeAudioDevice(d)"
-          >
-            {{ d.label || "Default" }}
-          </button>
-        </mat-menu>
-        <button mat-fab color="primary" (click)="toggleSharing()">
+        <button mat-fab (click)="mute = !mute" color="primary">
+          <mat-icon>{{ hidden ? "mic" : "mic_off" }}</mat-icon>
+        </button>
+        <button
+          mat-fab
+          color="primary"
+          (click)="toggleSharing()"
+          *ngIf="canShareScreen"
+        >
           <mat-icon>{{
-            isSharingStream ? "cancel_presentation" : "present_to_all"
+            isSharingScreen ? "cancel_presentation" : "present_to_all"
           }}</mat-icon>
         </button>
       </ng-container>
+      <div fxFlex></div>
       <button mat-fab (click)="rightSidenav?.toggle()" color="primary">
         <mat-icon>menu</mat-icon>
       </button>

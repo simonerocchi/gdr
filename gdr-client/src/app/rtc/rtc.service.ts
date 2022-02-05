@@ -92,11 +92,12 @@ export class RTCService {
   }
 
   isSharingScreen: boolean = false;
-
+  canShareScreen: boolean = false;
   constructor(
     private signaling: SignalingService,
     private login: LoginService
   ) {
+    this.canShareScreen = !!(navigator.mediaDevices as any).getDisplayMedia;
     this.signaling.close.subscribe(() => this.stopStreaming());
     this.ready.next(true);
   }
@@ -240,8 +241,6 @@ export class RTCService {
     };
     this.changeDevice(mc);
   }
-
-
 
   startSharingScreen() {
     const mediaDevices = navigator.mediaDevices as any;

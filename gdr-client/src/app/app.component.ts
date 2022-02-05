@@ -39,13 +39,19 @@ export class AppComponent implements OnInit {
     return this.rtc.ready;
   }
 
-  get isSharingStream() {
+  get isSharingScreen() {
     return this.rtc.isSharingScreen;
+  }
+
+  get canShareScreen() {
+    return this.rtc.canShareScreen;
   }
 
   get isMaster() {
     return this.login.currentUser?.IsMaster;
   }
+
+  private selectedVideoIndex = 0;
 
   added = new Subject<void>();
 
@@ -111,10 +117,20 @@ export class AppComponent implements OnInit {
   }
 
   toggleSharing() {
-    if (!this.isSharingStream) {
+    if (!this.isSharingScreen) {
       this.rtc.startSharingScreen();
     } else {
       this.rtc.stopSharingScreen();
+    }
+  }
+
+  toggleCamera() {
+    if(this.selectedVideoIndex == 0) {
+      this.changeVideoDevice(this.availableVideos[1]);
+      this.selectedVideoIndex = 1;
+    } else {
+      this.changeVideoDevice(this.availableVideos[0]);
+      this.selectedVideoIndex = 0;
     }
   }
 
