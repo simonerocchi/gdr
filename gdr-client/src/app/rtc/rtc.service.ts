@@ -104,9 +104,7 @@ export class RTCService {
     from(navigator.mediaDevices.enumerateDevices()).subscribe(
       (mediaDevices) => {
         this.availableDevices.next(mediaDevices);
-        const output = mediaDevices.filter(
-          (d) => d.kind == 'audiooutput'
-        )[0];
+        const output = mediaDevices.filter((d) => d.kind == 'audiooutput')[0];
         this._audioOutput.next(output);
       }
     );
@@ -248,11 +246,14 @@ export class RTCService {
     this._audioOutput.next(device);
   }
 
-  async startSharingScreen() {
+  startSharingScreen() {
     const mediaDevices = navigator.mediaDevices as any;
-    const stream = await mediaDevices.getDisplayMedia();
-    this.changeStream(stream);
-    this.isSharingScreen = true;
+    from(mediaDevices.getDisplayMedia() as Promise<MediaStream>).subscribe(
+      (stream) => {
+        this.changeStream(stream);
+        this.isSharingScreen = true;
+      }
+    );
   }
 
   stopSharingScreen() {
