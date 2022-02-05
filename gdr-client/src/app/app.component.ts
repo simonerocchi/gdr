@@ -2,9 +2,7 @@ import { RTCService } from './rtc/rtc.service';
 import { SignalingService } from './signaling/signaling.service';
 import { LoginService } from './login/login.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CmdButton } from './buttons/buttons.component';
 import { MatSidenav } from '@angular/material/sidenav';
-import { SubjectCommand } from './buttons/commands/subject.command';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Utente } from './model/utente.model';
 import { environment } from 'src/environments/environment';
@@ -37,8 +35,6 @@ export class AppComponent implements OnInit {
 
   availableVideos: MediaDeviceInfo[] = [];
 
-  availableOutputs: MediaDeviceInfo[] = [];
-
   get readyToStream() {
     return this.rtc.ready;
   }
@@ -69,7 +65,6 @@ export class AppComponent implements OnInit {
     this.rtc.availableDevices.subscribe(devices => {
       this.availableAudios = devices.filter(d =>  d.kind == 'audioinput');
       this.availableVideos = devices.filter(d => d.kind == 'videoinput');
-      this.availableOutputs = devices.filter(d => d.kind == 'audiooutput');
     });
   }
 
@@ -129,10 +124,6 @@ export class AppComponent implements OnInit {
 
   changeAudioDevice(device: MediaDeviceInfo) {
     this.rtc.changeAudioDevice(device);
-  }
-
-  changeAudioOutput(device: MediaDeviceInfo) {
-    this.rtc.changeAudioOutput(device);
   }
 
   get mute() {

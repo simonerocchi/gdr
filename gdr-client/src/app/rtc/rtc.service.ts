@@ -241,9 +241,7 @@ export class RTCService {
     this.changeDevice(mc);
   }
 
-  changeAudioOutput(device: MediaDeviceInfo) {
-    this._audioOutput.next(device);
-  }
+
 
   startSharingScreen() {
     const mediaDevices = navigator.mediaDevices as any;

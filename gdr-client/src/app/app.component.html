@@ -107,18 +107,6 @@
             {{ d.label || "Default" }}
           </button>
         </mat-menu>
-        <button mat-fab [matMenuTriggerFor]="outputMenu" color="primary">
-          <mat-icon>volume_up</mat-icon>
-        </button>
-        <mat-menu #outputMenu="matMenu">
-          <button
-            mat-menu-item
-            *ngFor="let d of availableOutputs"
-            (click)="changeAudioOutput(d)"
-          >
-            {{ d.label || "Default" }}
-          </button>
-        </mat-menu>
         <button mat-fab color="primary" (click)="toggleSharing()">
           <mat-icon>{{
             isSharingStream ? "cancel_presentation" : "present_to_all"

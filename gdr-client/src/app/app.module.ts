@@ -26,7 +26,6 @@ import { CommonModule } from '@angular/common';
 import { PlayerComponent } from './player/player.component';
 import { CharacterComponent } from './character/character.component';
 import { PlayersComponent } from './players/players.component';
-import { ButtonsComponent } from './buttons/buttons.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import { ButtonsComponent } from './buttons/buttons.component';
     PlayerComponent,
     CharacterComponent,
     PlayersComponent,
-    ButtonsComponent,
   ],
   imports: [
     BrowserModule,
