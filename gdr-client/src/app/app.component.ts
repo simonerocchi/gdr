@@ -124,15 +124,30 @@ export class AppComponent implements OnInit {
     }
   }
 
-  changeVideoDevice(device?: MediaDeviceInfo) {
+  changeVideoDevice(device: MediaDeviceInfo) {
     this.rtc.changeVideoDevice(device);
   }
 
-  changeAudioDevice(device?: MediaDeviceInfo) {
+  changeAudioDevice(device: MediaDeviceInfo) {
     this.rtc.changeAudioDevice(device);
   }
 
   changeAudioOutput(device: MediaDeviceInfo) {
     this.rtc.changeAudioOutput(device);
   }
+
+  get mute() {
+    return this.rtc.mute;
+  }
+  set mute(value) {
+    this.rtc.mute = value;
+  }
+
+  get hidden() {
+    return this.rtc.hidden;
+  }
+  set hidden(value) {
+    this.rtc.hidden = value;
+  }
+
 }

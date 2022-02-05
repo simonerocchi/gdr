@@ -1,11 +1,4 @@
-import {
-  BehaviorSubject,
-  from,
-  Observable,
-  of,
-  Subject,
-  Subscription,
-} from 'rxjs';
+import { BehaviorSubject, from, Subject, Subscription } from 'rxjs';
 import { LoginService } from './../login/login.service';
 import { SignalingService } from './../signaling/signaling.service';
 import { Injectable } from '@angular/core';
@@ -17,6 +10,7 @@ import {
   TipoMessaggio,
 } from '../model/messaggio.model';
 import { Player } from '../model/player.model';
+import { tap } from 'rxjs/operators';
 
 enum cameraMode {
   user = 'user',
@@ -70,57 +64,30 @@ export class RTCService {
 
   ready = new BehaviorSubject<boolean>(false);
 
-  private mediaConstraint?: MediaStreamConstraints = {};
-
-  private _prevVideoDevice?: MediaDeviceInfo;
-  private get prevVideoDevice(): MediaDeviceInfo | undefined {
-    return (
-      this._prevVideoDevice ||
-      this.availableDevices?.filter((d) => d.kind == 'videoinput')[0]
-    );
-  }
+  private mediaConstraint?: MediaStreamConstraints = {
+    audio: true,
+    video: true,
+  };
 
   get hidden(): boolean {
-    return !!!this.mediaConstraint?.video;
+    return this.myStream?.MediaStream?.getVideoTracks()[0].enabled || true;
   }
 
   set hidden(value: boolean) {
-    if (!value) {
-      this.changeVideoDevice(this.prevVideoDevice);
-    } else {
-      let video = this.mediaConstraint?.video as MediaTrackConstraints;
-      if (video) {
-        this._prevVideoDevice = this.availableDevices?.find(
-          (d) => d.deviceId == video.deviceId
-        );
-      }
-      this.changeVideoDevice(undefined);
+    try {
+      this.myStream!.MediaStream!.getVideoTracks()[0].enabled = value;
+    } finally {
     }
   }
 
-  private _prevAudioDevice?: MediaDeviceInfo;
-  private get prevAudioDevice(): MediaDeviceInfo | undefined {
-    return (
-      this._prevAudioDevice ||
-      this.availableDevices?.filter((d) => d.kind == 'audioinput')[0]
-    );
-  }
-
   get mute(): boolean {
-    return !!!this.mediaConstraint?.audio;
+    return this.myStream?.MediaStream?.getAudioTracks()[0].enabled || true;
   }
 
   set mute(value: boolean) {
-    if (value) {
-      this.changeAudioDevice(this.prevAudioDevice);
-    } else {
-      let audio = this.mediaConstraint?.audio as MediaTrackConstraints;
-      if (audio) {
-        this._prevAudioDevice = this.availableDevices?.find(
-          (d) => d.deviceId == audio.deviceId
-        );
-      }
-      this.changeAudioDevice(undefined);
+    try {
+      this.myStream!.MediaStream!.getAudioTracks()[0].enabled = value;
+    } finally {
     }
   }
 
@@ -131,6 +98,9 @@ export class RTCService {
     private login: LoginService
   ) {
     this.signaling.close.subscribe(() => this.stopStreaming());
+    this.ready.next(true);
+  }
+  inspectDevices() {
     from(navigator.mediaDevices.enumerateDevices()).subscribe(
       (mediaDevices) => {
         this.availableDevices = mediaDevices;
@@ -151,21 +121,17 @@ export class RTCService {
             deviceId: audio.deviceId ? { exact: audio.deviceId } : undefined,
           };
           this._audioOutput.next(output);
-          this.ready.next(true);
         }
       }
     );
   }
-  startStreaming(mediaDeviceObservable?: Observable<MediaStream>) {
+
+  startStreaming() {
     let id = this.login.currentUser!.ID;
-    if (!mediaDeviceObservable) {
-      mediaDeviceObservable = from(
-        navigator.mediaDevices.getUserMedia(this.mediaConstraint)
-      );
-    }
-    mediaDeviceObservable.subscribe((stream) => {
-      this.myStream = { ID: id, MediaStream: stream };
-      if (!this._streaming.value) {
+    from(navigator.mediaDevices.getUserMedia({ audio: true, video: true }))
+      .pipe(tap(this.inspectDevices))
+      .subscribe((stream) => {
+        this.myStream = { ID: id, MediaStream: stream };
         let sub = new Subscription();
         sub.add(
           this.signaling.access.subscribe((messaggio) => {
@@ -210,26 +176,8 @@ export class RTCService {
             Streaming: true,
           },
         });
-      }
-      this.peerConnections.forEach((pc) => {
-        const myTracks = this.myStream?.MediaStream?.getTracks();
-        const senders = pc.getSenders();
-        myTracks?.forEach((t) => {
-          const sender = senders.find((s) => s.track?.kind == t.kind);
-          if (sender) {
-            if (sender.track?.id != t.id) {
-              sender.replaceTrack(t);
-            }
-          } else {
-            pc.addTrack(t);
-          }
-        });
-        senders
-          .filter((s) => !myTracks?.some((t) => t.kind == s.track?.kind))
-          .forEach((s) => pc.removeTrack(s));
+        this._streaming.next(true);
       });
-      this._streaming.next(true);
-    });
   }
 
   stopStreaming(): void {
@@ -259,30 +207,55 @@ export class RTCService {
     }
   }
 
-  changeAudioDevice(device?: MediaDeviceInfo) {
-    if (device) {
-      this.mediaConstraint!.audio = {
-        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
-      };
-    } else {
-      this.mediaConstraint!.audio = undefined;
-    }
-    if (this._streaming.value) {
-      this.startStreaming();
-    }
+  changeDevice(mediaConstraint: MediaStreamConstraints) {
+    from(navigator.mediaDevices.getUserMedia(mediaConstraint)).subscribe(
+      this.changeStream
+    );
   }
 
-  changeVideoDevice(device?: MediaDeviceInfo) {
-    if (device) {
-      this.mediaConstraint!.video = {
+  changeStream(stream: MediaStream) {
+    stream
+      .getTracks()
+      .filter((t) =>
+        this.myStream?.MediaStream?.getTracks().some((mt) => mt.kind == t.kind)
+      )
+      .forEach((t) => {
+        this.myStream?.MediaStream?.getTracks()
+          .filter((mt) => mt.kind == t.kind)
+          .forEach((mt) => {
+            mt.stop();
+            this.myStream?.MediaStream?.removeTrack(mt);
+          });
+        this.myStream?.MediaStream?.addTrack(t);
+      });
+    this.peerConnections.forEach((pc) =>
+      pc
+        .getSenders()
+        .filter((s) => stream.getTracks().some((t) => t.kind == s.track?.kind))
+        .forEach((s) =>
+          s.replaceTrack(
+            stream.getTracks().find((t) => s.track?.kind == t.kind) || null
+          )
+        )
+    );
+  }
+
+  changeAudioDevice(device: MediaDeviceInfo) {
+    let mc = {
+      audio: {
         deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
-      };
-    } else {
-      this.mediaConstraint!.video = undefined;
-    }
-    if (this._streaming.value) {
-      this.startStreaming();
-    }
+      },
+    };
+    this.changeDevice(mc);
+  }
+
+  changeVideoDevice(device: MediaDeviceInfo) {
+    let mc = {
+      video: {
+        deviceId: device.deviceId ? { exact: device.deviceId } : undefined,
+      },
+    };
+    this.changeDevice(mc);
   }
 
   changeMediaDevice(device: MediaDeviceInfo) {
@@ -305,15 +278,14 @@ export class RTCService {
   }
 
   async startSharingScreen() {
-    this.hidden = true;
     const mediaDevices = navigator.mediaDevices as any;
     const stream = await mediaDevices.getDisplayMedia();
-    this.startStreaming(of(stream));
+    this.changeStream(stream);
     this.isSharingScreen = true;
   }
 
   stopSharingScreen() {
-    this.hidden = false;
+    this.changeDevice({ video: true });
     this.isSharingScreen = false;
   }
 

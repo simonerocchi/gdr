@@ -85,7 +85,7 @@
           <mat-icon>videocam</mat-icon>
         </button>
         <mat-menu #videoMenu="matMenu">
-          <button mat-menu-item (click)="changeVideoDevice()">NO VIDEO</button>
+          <button mat-menu-item (click)="hidden = !hidden">NO VIDEO</button>
           <button
             mat-menu-item
             *ngFor="let d of availableVideos"
@@ -98,7 +98,7 @@
           <mat-icon>mic</mat-icon>
         </button>
         <mat-menu #audioMenu="matMenu">
-          <button mat-menu-item (click)="changeAudioDevice()">NO AUDIO</button>
+          <button mat-menu-item (click)="mute = !mute">NO AUDIO</button>
           <button
             mat-menu-item
             *ngFor="let d of availableAudios"
