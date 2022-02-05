@@ -1,4 +1,11 @@
-import { BehaviorSubject, from, Observable, of, Subject, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { LoginService } from './../login/login.service';
 import { SignalingService } from './../signaling/signaling.service';
 import { Injectable } from '@angular/core';
@@ -20,14 +27,13 @@ enum cameraMode {
 const RTC_CONFIGURATION: RTCConfiguration = {
   iceServers: [
     {
-      urls: 'stun:stun.l.google.com:19302'
+      urls: 'stun:stun.l.google.com:19302',
     },
     {
-
       urls: 'turn:www.squidsystem.xyz:3478?transport=udp',
       username: 'soun',
-      credential: 'asega'
-    }
+      credential: 'asega',
+    },
   ],
 };
 
@@ -55,7 +61,9 @@ export class RTCService {
 
   availableDevices?: MediaDeviceInfo[];
 
-  private _audioOutput = new BehaviorSubject<MediaDeviceInfo | undefined>(undefined);
+  private _audioOutput = new BehaviorSubject<MediaDeviceInfo | undefined>(
+    undefined
+  );
   get audioOutput() {
     return this._audioOutput.asObservable();
   }
@@ -150,8 +158,10 @@ export class RTCService {
   }
   startStreaming(mediaDeviceObservable?: Observable<MediaStream>) {
     let id = this.login.currentUser!.ID;
-    if(!mediaDeviceObservable) {
-      mediaDeviceObservable = from(navigator.mediaDevices.getUserMedia(this.mediaConstraint));
+    if (!mediaDeviceObservable) {
+      mediaDeviceObservable = from(
+        navigator.mediaDevices.getUserMedia(this.mediaConstraint)
+      );
     }
     mediaDeviceObservable.subscribe((stream) => {
       this.myStream = { ID: id, MediaStream: stream };
@@ -202,9 +212,21 @@ export class RTCService {
         });
       }
       this.peerConnections.forEach((pc) => {
-        const myTracks =  this.myStream?.MediaStream?.getTracks();
+        const myTracks = this.myStream?.MediaStream?.getTracks();
         const senders = pc.getSenders();
-        myTracks?.forEach(t => senders.find(s => s.track?.kind == t.kind && s.track.id != t.id)?.replaceTrack(t));
+        myTracks?.forEach((t) => {
+          const sender = senders.find((s) => s.track?.kind == t.kind);
+          if (sender) {
+            if (sender.track?.id != t.id) {
+              sender.replaceTrack(t);
+            }
+          } else {
+            pc.addTrack(t);
+          }
+        });
+        senders
+          .filter((s) => !myTracks?.some((t) => t.kind == s.track?.kind))
+          .forEach((s) => pc.removeTrack(s));
       });
       this._streaming.next(true);
     });
@@ -350,9 +372,9 @@ export class RTCService {
   connectionDidTrackEvent(id: number, event: RTCTrackEvent): any {
     let track = event.track;
     let stream = this.streams.get(id);
-    track.onended = function(e) {
+    track.onended = function (e) {
       stream?.removeTrack(this);
-    }
+    };
     console.log('RTC: track event type: ' + event.type);
     stream?.addTrack(track);
   }
