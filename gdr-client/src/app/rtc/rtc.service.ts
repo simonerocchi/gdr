@@ -193,7 +193,7 @@ export class RTCService {
 
   changeDevice(mediaConstraint: MediaStreamConstraints) {
     from(navigator.mediaDevices.getUserMedia(mediaConstraint)).subscribe(
-      this.changeStream
+      (stream) => this.changeStream(stream)
     );
   }
 
