@@ -207,7 +207,6 @@ export class RTCService {
         this.myStream?.MediaStream?.getTracks()
           .filter((mt) => mt.kind == t.kind)
           .forEach((mt) => {
-            mt.stop();
             this.myStream?.MediaStream?.removeTrack(mt);
           });
         this.myStream?.MediaStream?.addTrack(t);
