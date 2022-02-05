@@ -53,10 +53,7 @@ export class RTCService {
 
   myStream?: Player;
 
-  private _availableDevices = new BehaviorSubject<MediaDeviceInfo[]>([]);
-  get availableDevices() {
-    return this._availableDevices.asObservable();
-  }
+  availableDevices = new BehaviorSubject<MediaDeviceInfo[]>([]);
 
   private _audioOutput = new BehaviorSubject<MediaDeviceInfo | undefined>(
     undefined
@@ -106,7 +103,7 @@ export class RTCService {
   inspectDevices() {
     from(navigator.mediaDevices.enumerateDevices()).subscribe(
       (mediaDevices) => {
-        this._availableDevices.next(mediaDevices);
+        this.availableDevices.next(mediaDevices);
         const output = mediaDevices.filter(
           (d) => d.kind == 'audiooutput'
         )[0];
