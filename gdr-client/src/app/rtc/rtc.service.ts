@@ -360,8 +360,12 @@ export class RTCService {
    */
   connectionDidTrackEvent(id: number, event: RTCTrackEvent): any {
     let track = event.track;
+    let stream = this.streams.get(id);
+    track.onended = function(e) {
+      stream?.removeTrack(this);
+    }
     console.log('RTC: track event type: ' + event.type);
-    this.streams.get(id)?.addTrack(track);
+    stream?.addTrack(track);
   }
 
   private didDiscoverIceCandidate(
