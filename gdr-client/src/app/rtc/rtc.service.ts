@@ -204,18 +204,7 @@ export class RTCService {
       this.peerConnections.forEach((pc) => {
         const myTracks =  this.myStream?.MediaStream?.getTracks();
         const senders = pc.getSenders();
-        // tolgo quelle in più
-        senders.forEach(s => {
-          if (!myTracks?.some(t => t.id == s.track?.id)) {
-            pc.removeTrack(s);
-          }
-        });
-        // aggiungo quelle che mancano
-        myTracks?.forEach(t => {
-          if(!senders.some(s => s.track?.id == t.id)) {
-            pc.addTrack(t);
-          }
-        });
+        myTracks?.forEach(t => senders.find(s => s.track?.kind == t.kind && s.track.id != t.id)?.replaceTrack(t));
       });
       this._streaming.next(true);
     });
