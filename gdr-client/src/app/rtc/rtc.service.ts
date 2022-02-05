@@ -17,8 +17,18 @@ enum cameraMode {
   default = 'default',
 }
 
-const RTC_CONFIGURATION = {
-  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+const RTC_CONFIGURATION: RTCConfiguration = {
+  iceServers: [
+    {
+      urls: 'stun:stun.l.google.com:19302'
+    },
+    {
+
+      urls: 'turn:www.squidsystem.xyz:3478?transport=udp',
+      username: 'soun',
+      credential: 'asega'
+    }
+  ],
 };
 
 @Injectable({
