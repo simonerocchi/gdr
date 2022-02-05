@@ -115,7 +115,7 @@ export class RTCService {
   startStreaming() {
     let id = this.login.currentUser!.ID;
     from(navigator.mediaDevices.getUserMedia({ audio: true, video: true }))
-      .pipe(tap(this.inspectDevices))
+      .pipe(tap(() => this.inspectDevices()))
       .subscribe((stream) => {
         this.myStream = { ID: id, MediaStream: stream };
         let sub = new Subscription();
