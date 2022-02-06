@@ -1,6 +1,6 @@
 {
   "name": "gdr-client",
-  "version": "1.0.0rc35",
+  "version": "1.0.0rc36",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
