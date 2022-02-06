@@ -18,15 +18,25 @@ type RollResult struct {
 // Roll roll dice depending on command
 func Roll(command string) (res RollResult, err error) {
 	if strings.HasPrefix(command, "/roll ") {
-		dice := strings.Split(command, "/roll ")[1]
-		var v int
-		if dice == "" {
-			v = 0
-		} else if v, err = strconv.Atoi(dice); err != nil {
+		r := strings.Split(command, "/roll ")[1]
+		dice := strings.Split(r, "d")
+		n := 1
+		var faces int
+		if len(dice) == 1 {
+			if faces, err = strconv.Atoi(dice[0]); err != nil {
+				return
+			}
+		} else if len(dice) != 2 {
 			err = errors.New("invalid command: " + command)
-			return
+		} else {
+			if faces, err = strconv.Atoi(dice[1]); err != nil {
+				return
+			}
+			if n, err = strconv.Atoi(dice[0]); err != nil {
+				return
+			}
 		}
-		res = squidroll(v)
+		res = regularroll(n, faces)
 	} else {
 		err = errors.New("invalid command: " + command)
 	}
@@ -34,6 +44,14 @@ func Roll(command string) (res RollResult, err error) {
 }
 
 // rand.Intn(6) + 1
+
+func regularroll(n int, faces int) (roll RollResult) {
+	for i := 0; i < n; i++ {
+		roll.Dices = append(roll.Dices, faces)
+		roll.Result += rand.Intn(faces) + 1
+	}
+	return
+}
 
 func squidroll(v int) (roll RollResult) {
 	if v == 0 {

@@ -54,7 +54,7 @@ export class ChatComponentComponent implements OnInit {
     this.scrollToBottom();
   }
 
-  roll(n: number): void {
+  roll(n: string): void {
     this.chatForm.setValue({'text': '/roll ' + n});
     this.onSubmit();
   }

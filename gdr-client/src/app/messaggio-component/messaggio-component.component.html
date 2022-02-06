@@ -10,22 +10,10 @@
     fxLayoutGap="10px"
     *ngIf="hasDice"
   >
-    <div
-      *ngFor="let d of dice!.Dices"
-      class="diceroll"
-      [ngClass]="{
-        good: dice!.Critic === true && d == dice!.Choices[0],
-        bad: dice!.Critic === false && d == dice!.Choices[0],
-        choice: d == dice!.Choices[0] || d == dice!.Choices[1]
-      }"
-    >
+    <div *ngFor="let d of dice!.Dices" class="diceroll">
       {{ d }}
     </div>
-    <div *ngIf="dice!.Critic == undefined">
-      {{ dice!.Choices[0] }} + {{ dice!.Choices[1] }} = {{ dice!.Result }}
-    </div>
-    <div *ngIf="dice!.Critic === true" class="good">SUCCESSO CRITICO!</div>
-    <div *ngIf="dice!.Critic === false" class="bad">FALLIMENTO CRITICO!</div>
+    <div>{{ dice?.Result }}</div>
   </div>
 </div>
 <div
