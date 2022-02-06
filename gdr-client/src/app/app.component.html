@@ -71,11 +71,15 @@
       fxLayoutAlign="space-around stretch"
       fxLayout="column"
       fxLayout.xs="row"
+      fxLayoutGap="10px"
     >
       <button
         mat-fab
         (click)="toggleStreaming()"
-        [color]="streaming ? 'red' : 'green'"
+        [ngClass]="{
+          calling:streaming,
+          notcalling:!streaming
+        }"
         *ngIf="readyToStream"
       >
         <mat-icon>{{ streaming ? "call_end" : "call" }}</mat-icon>

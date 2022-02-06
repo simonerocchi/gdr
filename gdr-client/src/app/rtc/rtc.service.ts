@@ -75,7 +75,7 @@ export class RTCService {
 
   set hidden(value: boolean) {
     try {
-      this.myStream!.MediaStream!.getVideoTracks()[0].enabled = value;
+      this.myStream!.MediaStream!.getVideoTracks()[0].enabled = !value;
     } finally {
     }
   }
@@ -86,7 +86,7 @@ export class RTCService {
 
   set mute(value: boolean) {
     try {
-      this.myStream!.MediaStream!.getAudioTracks()[0].enabled = value;
+      this.myStream!.MediaStream!.getAudioTracks()[0].enabled = !value;
     } finally {
     }
   }
