@@ -11,9 +11,9 @@
     *ngIf="hasDice"
   >
     <div *ngFor="let d of dice!.Dices" class="diceroll">
-      {{ d }}
+      d{{ d }}
     </div>
-    <div>{{ dice?.Result }}</div>
+    <div> => {{ dice?.Result }}</div>
   </div>
 </div>
 <div

@@ -19,31 +19,26 @@ import { environment } from 'src/environments/environment';
 export class CharacterComponent implements OnInit {
   @Input() characterID?: number;
   characterForm: FormGroup;
-  get boastsArray(): FormArray {
-    return this.characterForm.get('Boasts') as FormArray;
+  get condizioniArray(): FormArray {
+    return this.characterForm.get('Condizioni') as FormArray;
   }
-  get conditionsArray(): FormArray {
-    return this.characterForm.get('Conditions') as FormArray;
+  get equipaggiamentoArray(): FormArray {
+    return this.characterForm.get('Equipaggiamento') as FormArray;
   }
-  get equipmentArray(): FormArray {
-    return this.characterForm.get('Equipment') as FormArray;
+  get abilitaArray(): FormArray {
+    return this.characterForm.get('Abilita') as FormArray;
   }
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.characterForm = fb.group({
-      Name: ['', Validators.required],
-      Archetype: ['', Validators.required],
-      Drive: ['', Validators.required],
-      XP: [0, Validators.required],
-      Vig: [0, Validators.required],
-      Dex: [0, Validators.required],
-      Wil: [0, Validators.required],
-      Boasts: fb.array([]),
-      MaxGrit: [0, Validators.required],
-      Grit: [0, Validators.required],
-      Conditions: fb.array([]),
-      Equipment: fb.array([]),
-      Coins: [0, Validators.required],
-      Armor: [0, Validators.required],
+      Nome: ['', Validators.required],
+      Ruolo: ['', Validators.required],
+      Specialita: ['', Validators.required],
+      Abilita: fb.array([]),
+      Destino: [0, Validators.required],
+      Portafortuna: ['', Validators.required],
+      Condizioni: fb.array([]),
+      Equipaggiamento: fb.array([]),
+      Denaro: [0, Validators.required]
     });
   }
 
@@ -65,9 +60,9 @@ export class CharacterComponent implements OnInit {
   }
 
   setScheda(scheda: Scheda) {
-    scheda.Scheda.Boasts.forEach((t) => this.addBoast());
-    scheda.Scheda.Conditions.forEach((t) => this.addCondition());
-    scheda.Scheda.Equipment.forEach((t) => this.addEquipment());
+    scheda.Scheda.Abilita.forEach((t) => this.addAbilita());
+    scheda.Scheda.Condizioni.forEach((t) => this.addCondizione());
+    scheda.Scheda.Equipaggiamento.forEach((t) => this.addEquipaggiamento());
     this.characterForm.patchValue(scheda.Scheda);
   }
 
@@ -85,27 +80,30 @@ export class CharacterComponent implements OnInit {
     return this.fb.control('', Validators.required);
   }
 
-  addBoast(): void {
-    this.boastsArray.push(this.createArrayItem());
+  addCondizione(): void {
+    this.condizioniArray.push(this.createArrayItem());
   }
 
-  removeBoast(i: number) {
-    this.boastsArray.removeAt(i);
+  removeCondizione(i: number) {
+    this.condizioniArray.removeAt(i);
   }
 
-  addCondition(): void {
-    this.conditionsArray.push(this.createArrayItem());
+  addEquipaggiamento(): void {
+    this.equipaggiamentoArray.push(this.createArrayItem());
   }
 
-  removeCondition(i: number) {
-    this.conditionsArray.removeAt(i);
+  removeEquipaggiamento(i: number) {
+    this.equipaggiamentoArray.removeAt(i);
   }
 
-  addEquipment(): void {
-    this.equipmentArray.push(this.createArrayItem());
+  addAbilita(): void {
+    this.abilitaArray.push(this.fb.group({
+      NomeAbilita:  ['', Validators.required],
+      Dado:  [0, Validators.required]
+    }));
   }
 
-  removeEquipment(i: number) {
-    this.equipmentArray.removeAt(i);
+  removeAbilita(i: number) {
+    this.abilitaArray.removeAt(i);
   }
 }

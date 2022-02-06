@@ -5,16 +5,16 @@
   fxLayoutAlign="space-around stretch"
 >
   <mat-form-field appearance="legacy" fxFlex>
-    <mat-label>Name</mat-label>
-    <input matInput placeholder="Name" formControlName="Name" />
+    <mat-label>Nome</mat-label>
+    <input matInput placeholder="Nome" formControlName="Nome" />
   </mat-form-field>
   <mat-form-field appearance="legacy" fxFlex>
-    <mat-label>Archetype</mat-label>
-    <input matInput placeholder="Archetype" formControlName="Archetype" />
+    <mat-label>Ruolo</mat-label>
+    <input matInput placeholder="Ruolo" formControlName="Ruolo" />
   </mat-form-field>
   <mat-form-field appearance="legacy" fxFlex>
-    <mat-label>Drive</mat-label>
-    <input matInput placeholder="Drive" formControlName="Drive" />
+    <mat-label>Specialita</mat-label>
+    <input matInput placeholder="Specialita" formControlName="Specialita" />
   </mat-form-field>
   <div
     fxLayout="row"
@@ -22,73 +22,45 @@
     fxLayoutAlign="space-around center"
     fxFlex
   >
-    <mat-form-field appearance="legacy">
-      <mat-label>XP</mat-label>
-      <input matInput placeholder="XP" formControlName="XP" type="number" />
-    </mat-form-field>
-    <div fxFlex></div>
-    <mat-form-field appearance="legacy">
-      <mat-label>Armor</mat-label>
-      <input
-        matInput
-        placeholder="Armor"
-        formControlName="Armor"
-        type="number"
-      />
-    </mat-form-field>
-  </div>
-  <div
-    fxLayout="row"
-    fxLayoytGap="5px"
-    fxLayoutAlign="space-around center"
-    fxFlex
-  >
-    <div fxFlex>
-      <mat-form-field appearance="legacy">
-        <mat-label>Vig</mat-label>
-        <input matInput placeholder="Vig" formControlName="Vig" type="number" />
-      </mat-form-field>
-    </div>
-    <div fxFlex></div>
-    <div fxFlex>
-      <mat-form-field appearance="legacy">
-        <mat-label>Dex</mat-label>
-        <input matInput placeholder="Dex" formControlName="Dex" type="number" />
-      </mat-form-field>
-    </div>
-    <div fxFlex></div>
-    <div fxFlex>
-      <mat-form-field appearance="legacy">
-        <mat-label>Wil</mat-label>
-        <input matInput placeholder="Wil" formControlName="Wil" type="number" />
-      </mat-form-field>
-    </div>
-  </div>
-  <div fxFlex>
-    <div fxLayout="row" fxLayoytGap="5px">
-      <mat-label fxFlex>Boasts</mat-label>
-      <button
-        (click)="addBoast()"
-        fxFlex="nogrow"
-        mat-icon-button
-        aria-label="add trait"
-        color="primary"
-      >
-        <mat-icon>add</mat-icon>
-      </button>
-    </div>
-    <div
-      *ngFor="let t of boastsArray.controls; let i = index"
-      formArrayName="Traits"
-      fxLayout="row"
-      fxLayoytGap="5px"
-      fxLayoutAlign="space-around center"
+    <mat-label fxFlex>Abilità</mat-label>
+    <button
+      (click)="addAbilita()"
+      fxFlex="nogrow"
+      mat-icon-button
+      aria-label="Aggiungi Abilità"
+      color="primary"
     >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <div
+    *ngFor="let t of abilitaArray.controls; let i = index"
+    formArrayName="Abilita"
+    fxLayout="row"
+    fxLayoytGap="5px"
+    fxLayoutAlign="space-around center"
+  >
+    <div [formGroupName]="i">
       <mat-form-field appearance="legacy" fxFlex>
-        <input matInput [formControlName]="i" type="string" />
+        <input
+          matInput
+          formControlName="NomeAbilita"
+          type="string"
+          placeholder="Abilità"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="legacy" fxFlex>
+        <mat-select formControlName="Dado" placeholder="d?">
+          <mat-option [value]="4">d4</mat-option>
+          <mat-option [value]="6">d6</mat-option>
+          <mat-option [value]="8">d8</mat-option>
+          <mat-option [value]="10">d10</mat-option>
+          <mat-option [value]="12">d12</mat-option>
+        </mat-select>
       </mat-form-field>
       <button
-        (click)="removeBoast(i)"
+        (click)="removeAbilita(i)"
         fxFlex="nogrow"
         mat-icon-button
         aria-label="delete trait"
@@ -98,27 +70,42 @@
       </button>
     </div>
   </div>
-  <mat-label fxFlex>Grit</mat-label>
   <div
-    fxFlex
     fxLayout="row"
     fxLayoytGap="5px"
     fxLayoutAlign="space-around center"
+    fxFlex
   >
     <mat-form-field appearance="legacy">
-      <input matInput formControlName="Grit" type="number" />
+      <mat-label>Destino</mat-label>
+      <input
+        matInput
+        placeholder="Destino"
+        formControlName="Destino"
+        type="number"
+      />
     </mat-form-field>
-    <div fxFlex style="text-align: center">DI</div>
-    <mat-form-field appearance="legacy">
-      <input matInput formControlName="MaxGrit" type="number" />
+    <div fxFlex></div>
+    <mat-form-field>
+      <mat-label>Denaro</mat-label>
+      <mat-select formControlName="Denaro" appearance="legacy" fxFlex>
+        <mat-option [value]="4">d4</mat-option>
+        <mat-option [value]="6">d6</mat-option>
+        <mat-option [value]="8">d8</mat-option>
+        <mat-option [value]="10">d10</mat-option>
+        <mat-option [value]="12">d12</mat-option>
+      </mat-select>
     </mat-form-field>
   </div>
-
+  <mat-form-field appearance="legacy" fxFlex>
+    <mat-label>Portafortuna</mat-label>
+    <input matInput placeholder="Portafortuna" formControlName="Portafortuna" />
+  </mat-form-field>
   <div fxFlex>
-    <div fxLayout="row" fxLayoytGap="5px">
-      <mat-label fxFlex>Conditions</mat-label>
+    <div fxLayout="row" fxLayoytGap="5px" fxLayoutAlign="space-around center">
+      <mat-label fxFlex>Condizioni</mat-label>
       <button
-        (click)="addCondition()"
+        (click)="addCondizione()"
         fxFlex="nogrow"
         mat-icon-button
         aria-label="add condition"
@@ -128,8 +115,8 @@
       </button>
     </div>
     <div
-      *ngFor="let t of conditionsArray.controls; let i = index"
-      formArrayName="Conditions"
+      *ngFor="let t of condizioniArray.controls; let i = index"
+      formArrayName="Condizioni"
       fxLayout="row"
       fxLayoytGap="5px"
       fxLayoutAlign="space-around center"
@@ -138,7 +125,7 @@
         <input matInput [formControlName]="i" type="string" />
       </mat-form-field>
       <button
-        (click)="removeCondition(i)"
+        (click)="removeCondizione(i)"
         fxFlex="nogrow"
         mat-icon-button
         aria-label="delete condition"
@@ -148,12 +135,11 @@
       </button>
     </div>
   </div>
-
   <div fxFlex>
-    <div fxLayout="row" fxLayoytGap="5px">
-      <mat-label fxFlex>Equipment</mat-label>
+    <div fxLayout="row" fxLayoytGap="5px" fxLayoutAlign="space-around center">
+      <mat-label fxFlex>Equipaggiamento</mat-label>
       <button
-        (click)="addEquipment()"
+        (click)="addEquipaggiamento()"
         fxFlex="nogrow"
         mat-icon-button
         aria-label="add condition"
@@ -163,8 +149,8 @@
       </button>
     </div>
     <div
-      *ngFor="let t of equipmentArray.controls; let i = index"
-      formArrayName="Equipment"
+      *ngFor="let t of equipaggiamentoArray.controls; let i = index"
+      formArrayName="Equipaggiamento"
       fxLayout="row"
       fxLayoytGap="5px"
       fxLayoutAlign="space-around center"
@@ -172,23 +158,21 @@
       <mat-form-field appearance="legacy" fxFlex>
         <input matInput [formControlName]="i" type="string" />
       </mat-form-field>
-      <div fxFlex="nogrow">
-        <button
-          (click)="removeEquipment(i)"
-          mat-icon-button
-          aria-label="delete equipment"
-          color="warning"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+      <button
+        (click)="removeEquipaggiamento(i)"
+        fxFlex="nogrow"
+        mat-icon-button
+        aria-label="delete condition"
+        color="warning"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
     </div>
   </div>
-  <mat-form-field appearance="legacy" fxFlex>
-    <mat-label>Coins</mat-label>
-    <input matInput placeholder="Coins" formControlName="Coins" type="number" />
-  </mat-form-field>
+  <div fxFlex></div>
   <div fxFlex="nogrow">
-    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">
+      SALVA
+    </button>
   </div>
 </form>
