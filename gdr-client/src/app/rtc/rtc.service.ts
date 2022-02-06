@@ -70,7 +70,7 @@ export class RTCService {
   };
 
   get hidden(): boolean {
-    return this.myStream?.MediaStream?.getVideoTracks()[0].enabled || true;
+    return !this.myStream?.MediaStream?.getVideoTracks()[0].enabled || true;
   }
 
   set hidden(value: boolean) {
@@ -81,7 +81,7 @@ export class RTCService {
   }
 
   get mute(): boolean {
-    return this.myStream?.MediaStream?.getAudioTracks()[0].enabled || true;
+    return !this.myStream?.MediaStream?.getAudioTracks()[0].enabled || true;
   }
 
   set mute(value: boolean) {
