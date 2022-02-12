@@ -6,5 +6,8 @@
     class="player-video"
     [srcObject]="this.player?.MediaStream"
     [muted]="itsMe"
+    [ngClass]="{
+      'my-video' : itsMe
+    }"
   ></video>
 </div>

@@ -64,11 +64,6 @@ export class RTCService {
 
   ready = new BehaviorSubject<boolean>(false);
 
-  private mediaConstraint?: MediaStreamConstraints = {
-    audio: true,
-    video: true,
-  };
-
   get hidden(): boolean {
     return !this.myStream?.MediaStream?.getVideoTracks()[0].enabled;
   }

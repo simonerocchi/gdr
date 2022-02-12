@@ -7,7 +7,6 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
-import { LoginService } from '../login/login.service';
 import { Scheda } from '../model/scheda.model';
 import { environment } from 'src/environments/environment';
 
